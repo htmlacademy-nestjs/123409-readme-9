@@ -23,6 +23,9 @@
     },
     {
       "path": "./shared-types"
+    },
+    {
+      "path": "./libs/shared/core"
     }
   ]
 }
