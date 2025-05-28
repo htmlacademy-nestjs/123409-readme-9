@@ -42,6 +42,7 @@
     "apps/*",
     "shared-types",
     "libs/shared/core",
-    "libs/shared/helpers"
+    "libs/shared/helpers",
+    "libs/user/*"
   ]
 }
