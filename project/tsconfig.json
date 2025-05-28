@@ -35,6 +35,9 @@
     },
     {
       "path": "./libs/user/blog-user"
+    },
+    {
+      "path": "./libs/shared/data-access"
     }
   ]
 }
