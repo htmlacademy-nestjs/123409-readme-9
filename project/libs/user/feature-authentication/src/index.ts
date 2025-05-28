@@ -1,2 +1,1 @@
-export * from './lib/feature-authentication.module';
-
+export { AuthenticationModule } from './authentication-module/authentication.module';
