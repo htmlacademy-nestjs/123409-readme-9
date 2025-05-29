@@ -3,7 +3,7 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { TEST_USER_ID } from './post.constants';
+import { TEST_USER_ID } from '@project/core';
 
 @ApiTags('posts')
 @Controller('posts')

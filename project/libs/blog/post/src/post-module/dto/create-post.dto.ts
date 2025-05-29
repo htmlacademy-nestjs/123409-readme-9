@@ -22,13 +22,6 @@ export class CreatePostDto {
   public status: PostStatus;
 
   @ApiProperty({
-    description: 'Author ID',
-    example: '123e4567-e89b-12d3-a456-426614174000'
-  })
-  @IsString()
-  public authorId: string;
-
-  @ApiProperty({
     description: 'Original author ID (for reposts)',
     required: false,
     example: '123e4567-e89b-12d3-a456-426614174000'
