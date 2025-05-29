@@ -8,6 +8,7 @@ import { BlogUserRepository, BlogUserEntity } from "@project/blog-user";
 import { AuthUser } from "@project/core";
 
 import { CreateUserDto } from "../dto/create-user.dto";
+import { LoginUserDto } from "../dto/login-user.dto";
 import {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
@@ -39,7 +40,8 @@ export class AuthenticationService {
 
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
 
-    return this.blogUserRepository.save(userEntity);
+    await this.blogUserRepository.save(userEntity);
+    return userEntity;
   }
 
   public async verifyUser(dto: LoginUserDto) {

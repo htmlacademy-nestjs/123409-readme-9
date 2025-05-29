@@ -1,4 +1,27 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { AuthenticationService } from './authentication.service';
+import { CreateUserDto } from 'src/dto/create-user.dto';
+import { LoginUserDto } from 'src/dto/login-user.dto';
 
 @Controller('auth')
-export class AuthenticationController {}
+export class AuthenticationController {
+  constructor(private readonly authService: AuthenticationService) {}
+
+  @Post('register')
+  public async create(@Body() dto: CreateUserDto) {
+    const newUser = await this.authService.register(dto);
+    return newUser.toPOJO();
+  }
+
+  @Post('login')
+  public async login(@Body() dto: LoginUserDto) {
+    const verifiedUser = await this.authService.verifyUser(dto);
+    return verifiedUser.toPOJO();
+  }
+
+  @Get(':id')
+  public async show(@Param('id') id: string) {
+    const existUser = await this.authService.getUser(id);
+    return existUser.toPOJO();
+  }
+}
