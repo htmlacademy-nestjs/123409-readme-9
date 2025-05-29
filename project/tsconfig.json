@@ -4,22 +4,34 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/user-e2e"
-    },
-    {
       "path": "./apps/user"
-    },
-    {
-      "path": "./apps/blog-e2e"
     },
     {
       "path": "./apps/blog"
     },
     {
-      "path": "./apps/notification-e2e"
+      "path": "./apps/notification"
     },
     {
-      "path": "./apps/notification"
+      "path": "./shared-types"
+    },
+    {
+      "path": "./libs/shared/core"
+    },
+    {
+      "path": "./libs/shared/helpers"
+    },
+    {
+      "path": "./libs/user/feature-authentication"
+    },
+    {
+      "path": "./libs/user/blog-user"
+    },
+    {
+      "path": "./libs/shared/data-access"
+    },
+    {
+      "path": "./libs/blog/post"
     }
   ]
 }
