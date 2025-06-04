@@ -32,6 +32,9 @@
     },
     {
       "path": "./libs/blog/post"
+    },
+    {
+      "path": "./libs/user/config"
     }
   ]
 }
