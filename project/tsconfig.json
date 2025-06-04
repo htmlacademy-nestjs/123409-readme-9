@@ -34,7 +34,7 @@
       "path": "./libs/blog/post"
     },
     {
-      "path": "./libs/user/config"
+      "path": "./libs/user/user-config"
     }
   ]
 }
