@@ -1,4 +1,4 @@
-import { Document, Model, Types } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import { NotFoundException } from '@nestjs/common';
 
 import { Entity, StorableEntity, EntityFactory } from '@project/core';
@@ -20,7 +20,11 @@ export abstract class BaseMongoRepository<
       return null;
     }
 
-    const plainObject = document.toObject({ versionKey: false }) as ReturnType<T['toPOJO']>;
+    const plainObject = {
+      ...document.toObject({ versionKey: false }),
+      id: document._id?.toString() ?? ''
+    } as ReturnType<T['toPOJO']>;
+    
     return this.entityFactory.create(plainObject);
   }
 
@@ -35,9 +39,16 @@ export abstract class BaseMongoRepository<
     return entity;
   }
 
-  public async save(entity: T): Promise<void> {
+  public async save(entity: T): Promise<T> {
     const newEntity = new this.model(entity.toPOJO());
-    await newEntity.save();
+    const savedDocument = await newEntity.save();
+    const createdEntity = this.createEntityFromDocument(savedDocument);
+    
+    if (!createdEntity) {
+      throw new Error('Failed to create entity from saved document');
+    }
+    
+    return createdEntity;
   }
 
   public async update(entity: T): Promise<void> {

@@ -18,7 +18,7 @@ export class BlogUserModel extends Document {
   public email: string;
 
   @Prop({
-    required: true,
+    required: false,
   })
   public avatar: string;
 
