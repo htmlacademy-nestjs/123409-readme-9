@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/user/user-config"
+    },
+    {
       "path": "../../libs/user/feature-authentication"
     },
     {
