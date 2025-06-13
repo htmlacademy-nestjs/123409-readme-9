@@ -35,6 +35,9 @@
     },
     {
       "path": "./libs/user/user-config"
+    },
+    {
+      "path": "./libs/blog/models"
     }
   ]
 }

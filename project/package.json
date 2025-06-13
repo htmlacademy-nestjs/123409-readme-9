@@ -55,6 +55,7 @@
     "libs/shared/helpers",
     "libs/user/*",
     "libs/shared/data-access",
-    "libs/blog/post"
+    "libs/blog/post",
+    "libs/blog/models"
   ]
 }
