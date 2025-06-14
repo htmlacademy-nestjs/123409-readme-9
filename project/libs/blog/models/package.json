@@ -1,5 +1,5 @@
 {
-  "name": "@project/models",
+  "name": "@project/blog-models",
   "version": "0.0.1",
   "private": true,
   "main": "./dist/index.js",
