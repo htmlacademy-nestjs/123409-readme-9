@@ -38,6 +38,12 @@
     },
     {
       "path": "./libs/blog/models"
+    },
+    {
+      "path": "./libs/blog/models"
+    },
+    {
+      "path": "./libs/blog/models"
     }
   ]
 }

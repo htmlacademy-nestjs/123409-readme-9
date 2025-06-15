@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Param, Get, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Put, Delete, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { TEST_USER_ID } from '@project/core';
+import type { PostListQuery } from './post.repository';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -34,6 +35,18 @@ export class PostController {
   public async update(@Body() dto: UpdatePostDto) {
     const updatedPost = await this.postService.update(dto, TEST_USER_ID);
     return updatedPost.toPOJO();
+  }
+
+  @Get('/')
+  @ApiOperation({ summary: 'Get all posts' })
+  @ApiResponse({
+    status: 200,
+    description: 'The posts have been successfully found.',
+    type: UpdatePostDto
+  })
+  public async index(@Query() query: PostListQuery) {
+    const posts = await this.postService.find(query);
+    return posts.map(post => post.toPOJO());
   }
 
   @Get(':id')

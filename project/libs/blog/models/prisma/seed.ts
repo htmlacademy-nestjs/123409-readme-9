@@ -1,15 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-const FIRST_POST_UUID = '6d308040-96a2-4162-bea6-2338e9976540';
-const SECOND_POST_UUID = 'ab04593b-da99-4fe3-8b4b-e06d82e2efdd';
-
 const FIRST_USER_ID = '658170cbb954e9f5b905ccf4';
 const SECOND_USER_ID = '6581762309c030b503e30512';
 
 function getPosts() {
   return [
     {
-      id: FIRST_POST_UUID,
       type: 'article',
       status: 'published',
       authorId: FIRST_USER_ID,
@@ -35,7 +31,6 @@ function getPosts() {
       ]
     },
     {
-      id: SECOND_POST_UUID,
       type: 'article',
       status: 'published',
       authorId: FIRST_USER_ID,
@@ -65,7 +60,6 @@ async function seedDb(prismaClient: PrismaClient) {
   for (const post of mockPosts) {
     await prismaClient.post.create({
       data: {
-        id: post.id,
         type: post.type,
         status: post.status,
         authorId: post.authorId,

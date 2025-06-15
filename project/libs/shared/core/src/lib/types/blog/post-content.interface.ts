@@ -26,3 +26,5 @@ export interface LinkPostContent extends BasePostContent {
   url: string;
   description?: string;
 } 
+
+export type PostContent = VideoPostContent | TextPostContent | QuotePostContent | PhotoPostContent | LinkPostContent;

@@ -11,6 +11,9 @@
   "include": ["src/**/*.ts"],
   "references": [
     {
+      "path": "../models/tsconfig.lib.json"
+    },
+    {
       "path": "../../shared/data-access/tsconfig.lib.json"
     },
     {

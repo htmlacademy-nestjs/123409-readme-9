@@ -14,6 +14,9 @@
       "default": "./dist/index.js"
     }
   },
+  "nx": {
+    "name": "blog-models"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
   }

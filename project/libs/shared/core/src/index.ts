@@ -8,7 +8,7 @@ export type { EntityFactory } from './lib/interfaces/entity-factory.interface';
 
 export type { Post } from './lib/types/blog/post.interface';
 export { PostType, PostStatus } from './lib/types/blog/post-type.enum';
-export type { VideoPostContent, TextPostContent, QuotePostContent, PhotoPostContent, LinkPostContent } from './lib/types/blog/post-content.interface';
+export type { VideoPostContent, TextPostContent, QuotePostContent, PhotoPostContent, LinkPostContent, PostContent } from './lib/types/blog/post-content.interface';
 
 export type { PostComment } from './lib/types/blog/post-comment.interface';
 
