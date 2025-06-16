@@ -1,5 +1,4 @@
-import { genSalt, hash, compare } from 'bcrypt';
-import { Entity, StorableEntity, Post, PostStatus, PostType, PhotoPostContent, QuotePostContent, TextPostContent, VideoPostContent, LinkPostContent, AuthUser } from "@project/core";
+import { Entity, StorableEntity, Post, PostStatus, PostType, PhotoPostContent, QuotePostContent, TextPostContent, VideoPostContent, LinkPostContent } from "@project/core";
 
 export class PostEntity extends Entity implements StorableEntity<Post> {
   public type: PostType;
@@ -12,6 +11,8 @@ export class PostEntity extends Entity implements StorableEntity<Post> {
   public publishedAt: Date;
   public content: VideoPostContent | TextPostContent | QuotePostContent | PhotoPostContent | LinkPostContent;
   public tags: string[];
+  public likesCount?: number;
+  public commentsCount?: number;
   constructor(post?: Post) {
     super();
     this.populate(post);
@@ -22,7 +23,9 @@ export class PostEntity extends Entity implements StorableEntity<Post> {
       return;
     }
 
-    this.id = post.id ?? '';
+    if (post.id) {
+      this.id = post.id;
+    }
     this.type = post.type;
     this.status = post.status;
     this.authorId = post.authorId;
@@ -33,11 +36,18 @@ export class PostEntity extends Entity implements StorableEntity<Post> {
     this.publishedAt = post.publishedAt;
     this.content = post.content;
     this.tags = post.tags ?? [];
+    
+    if (post.likesCount !== undefined) {
+      this.likesCount = post.likesCount;
+    }
+    
+    if (post.commentsCount !== undefined) {
+      this.commentsCount = post.commentsCount;
+    }
   }
 
   public toPOJO(): Post {
-    return {
-      id: this.id,
+    const pojo: Post = {
       type: this.type,
       status: this.status,
       authorId: this.authorId,
@@ -49,5 +59,19 @@ export class PostEntity extends Entity implements StorableEntity<Post> {
       content: this.content,
       tags: this.tags,
     };
+
+    if (this.id) {
+      pojo.id = this.id;
+    }
+
+    if (this.likesCount !== undefined) {
+      pojo.likesCount = this.likesCount;
+    }
+
+    if (this.commentsCount !== undefined) {
+      pojo.commentsCount = this.commentsCount;
+    }
+
+    return pojo;
   }
 }

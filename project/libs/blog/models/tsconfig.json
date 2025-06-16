@@ -4,15 +4,6 @@
   "include": [],
   "references": [
     {
-      "path": "../models"
-    },
-    {
-      "path": "../../shared/data-access"
-    },
-    {
-      "path": "../../shared/core"
-    },
-    {
       "path": "./tsconfig.lib.json"
     }
   ]

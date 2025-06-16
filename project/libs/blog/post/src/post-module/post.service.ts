@@ -1,12 +1,11 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { Post } from "@project/core";
 
-import { PostRepository } from "./post.repository";
+import { PostListQuery, PostRepository } from "./post.repository";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { PostFactory } from "./post.factory";
 import { UpdatePostDto } from "./dto/update-post.dto";
@@ -21,16 +20,10 @@ export class PostService {
 
   public async create(dto: CreatePostDto, userId: string) {
     const post: Post = {
-      type: dto.type,
-      status: dto.status,
+      ...dto,
       authorId: userId,
-      originalAuthorId: dto.originalAuthorId,
-      originalPostId: dto.originalPostId,
-      isRepost: dto.isRepost,
-      createdAt: dto.createdAt,
-      publishedAt: dto.publishedAt,
-      content: dto.content,
       tags: [...new Set(dto.tags)],
+      publishedAt: new Date
     };
 
     const postEntity = this.postFactory.create(post);
@@ -64,7 +57,7 @@ export class PostService {
 
     const postEntity = this.postFactory.create(post);
 
-    await this.postRepository.save(postEntity);
+    await this.postRepository.update(postEntity);
     return postEntity;
   }
 
@@ -90,6 +83,10 @@ export class PostService {
     }
 
     return post;
+  }
+
+  public async find(query: PostListQuery) {
+    return this.postRepository.find(query);
   }
 
   public async repost(id: string, userId: string) {

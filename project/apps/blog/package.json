@@ -39,6 +39,36 @@
             "buildTarget": "@project/blog:build:production"
           }
         }
+      },
+      "db:lint": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma validate --schema libs/blog/models/prisma/schema.prisma"
+        }
+      },
+      "db:migrate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma migrate dev --schema libs/blog/models/prisma/schema.prisma --skip-generate --skip-seed"
+        }
+      },
+      "db:reset": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma migrate reset --schema libs/blog/models/prisma/schema.prisma --force --skip-generate --skip-seed"
+        }
+      },
+      "db:generate": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "npx prisma generate --schema libs/blog/models/prisma/schema.prisma"
+        }
+      },
+      "db:seed": {
+        "executor": "nx:run-commands",
+        "options": {
+          "command": "ts-node -P tsconfig.base.json libs/blog/models/prisma/seed.ts"
+        }
       }
     }
   }

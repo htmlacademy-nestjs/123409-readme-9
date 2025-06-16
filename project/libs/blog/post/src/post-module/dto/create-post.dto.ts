@@ -56,7 +56,8 @@ export class CreatePostDto {
 
   @ApiProperty({
     description: 'Post publication date',
-    example: '2024-03-20T12:00:00Z'
+    example: '2024-03-20T12:00:00Z',
+    required: false
   })
   @IsDate()
   @Type(() => Date)

@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id               String        @id @default(uuid()) @map("id")
+  type             String
+  status           String
+  authorId         String        @map("author_id")
+  originalAuthorId String?       @map("original_author_id")
+  originalPostId   String?       @map("original_post_id")
+  isRepost         Boolean       @default(false) @map("is_repost")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  publishedAt      DateTime      @map("published_at")
+  content          Json
+  tags             String[]
+  comments         PostComment[]
+  likes            PostLike[]
+
+  @@map("posts")
+}
+
+model PostComment {
+  id        String   @id @default(uuid()) @map("id")
+  content   String
+  postId    String   @map("post_id")
+  authorId  String   @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id])
+
+  @@map("comments")
+}
+
+model PostLike {
+  id        String   @id @default(uuid()) @map("id")
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  post      Post?    @relation(fields: [postId], references: [id])
+
+  @@map("likes")
+}
