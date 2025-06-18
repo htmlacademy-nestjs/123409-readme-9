@@ -5,6 +5,8 @@ export type { AuthUser } from './lib/types/user/auth-user.interface';
 
 export type { StorableEntity } from './lib/interfaces/storable-entity.interface';
 export type { EntityFactory } from './lib/interfaces/entity-factory.interface';
+export type { PaginationResult } from './lib/interfaces/pagination.interface';
+export type { SortDirection } from './lib/interfaces/sort-direction.interface';
 
 export type { Post } from './lib/types/blog/post.interface';
 export { PostType, PostStatus } from './lib/types/blog/post-type.enum';
