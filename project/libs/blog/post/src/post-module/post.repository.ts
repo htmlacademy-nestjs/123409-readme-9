@@ -140,11 +140,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
     return {
       entities: records.map((record) => {
         const post = this.transformRecord(record);
-        const entity = this.createEntityFromDocument(post);
-        if (!entity) {
-          throw new Error("Failed to create entity from document");
-        }
-        return entity;
+        return this.createEntityFromDocument(post);
       }),
       totalPages: Math.ceil(totalItems / limit),
       totalItems: totalItems,

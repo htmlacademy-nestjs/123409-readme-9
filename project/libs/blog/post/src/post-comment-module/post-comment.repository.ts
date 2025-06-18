@@ -3,7 +3,13 @@ import { PostCommentEntity } from "./post-comment.entity";
 import { BasePostgresRepository } from "@project/data-access";
 import { PostCommentFactory } from "./post-comment.factory";
 import { PrismaClientService } from "@project/blog-models";
-import { PostComment } from "@project/core";
+import { PostComment, PaginationResult } from "@project/core";
+
+export interface PostCommentListQuery {
+  page?: number;
+  limit?: number;
+}
+
 
 @Injectable()
 export class PostCommentRepository extends BasePostgresRepository<
@@ -35,12 +41,26 @@ export class PostCommentRepository extends BasePostgresRepository<
     return this.entityFactory.create(record);
   }
 
-  public async findByPostId(postId: string): Promise<PostCommentEntity[]> {
-    const records = await this.client.postComment.findMany({
-      where: { postId }
-    });
+  public async findByPostId(postId: string, query: PostCommentListQuery): Promise<PaginationResult<PostCommentEntity>> {
+    const { page = 1, limit = 50 } = query; 
+    const skip = page && limit ? (page - 1) * limit : undefined;
+    const where = { postId };
+    const [records, totalItems] = await Promise.all([
+      this.client.postComment.findMany({
+        where,
+        skip,
+        take: limit
+      }),
+      this.client.postComment.count({ where })
+    ]);
 
-    return records.map(this.entityFactory.create);
+    return {
+      entities: records.map(this.entityFactory.create),
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems,
+      currentPage: page,
+      itemsPerPage: limit
+    };
   }
 
   public override async deleteById(id: string): Promise<void> {
