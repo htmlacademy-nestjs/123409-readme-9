@@ -3,7 +3,7 @@ import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-
+import { MongoIdValidationPipe } from '@project/pipes';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthenticationController {
@@ -45,7 +45,7 @@ export class AuthenticationController {
     type: CreateUserDto
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  public async show(@Param('id') id: string) {
+  public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();
   }
