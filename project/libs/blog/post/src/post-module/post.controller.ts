@@ -5,6 +5,9 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { TEST_USER_ID } from '@project/core';
 import type { PostListQuery } from './post.repository';
+import { PostRdo } from './rdo/post.rdo';
+import { BlogPostWithPaginationRdo } from './rdo/post-with-pagination.dto';
+import { fillDto } from '@project/helpers';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -21,7 +24,7 @@ export class PostController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   public async create(@Body() dto: CreatePostDto) {
     const newPost = await this.postService.create(dto, TEST_USER_ID);
-    return newPost.toPOJO();
+    return fillDto(PostRdo, newPost.toPOJO());
   }
 
   @Put('update')
@@ -34,7 +37,7 @@ export class PostController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   public async update(@Body() dto: UpdatePostDto) {
     const updatedPost = await this.postService.update(dto, TEST_USER_ID);
-    return updatedPost.toPOJO();
+    return fillDto(PostRdo, updatedPost.toPOJO());
   }
 
   @Get('/')
@@ -45,8 +48,11 @@ export class PostController {
     type: UpdatePostDto
   })
   public async index(@Query() query: PostListQuery) {
-    const posts = await this.postService.find(query);
-    return posts.map(post => post.toPOJO());
+    const postsWithPagination = await this.postService.find(query);
+    return fillDto(BlogPostWithPaginationRdo, {
+      ...postsWithPagination,
+      entities: postsWithPagination.entities.map(post => fillDto(PostRdo, post.toPOJO()))
+    });
   }
 
   @Get(':id')
@@ -60,7 +66,7 @@ export class PostController {
   @ApiResponse({ status: 404, description: 'Post not found.' })
   public async show(@Param('id') id: string) {
     const existPost = await this.postService.findById(id);
-    return existPost.toPOJO();
+    return fillDto(PostRdo, existPost.toPOJO());
   }
 
   @Delete(':id')

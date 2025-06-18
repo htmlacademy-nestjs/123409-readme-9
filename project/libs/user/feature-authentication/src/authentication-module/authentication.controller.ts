@@ -3,7 +3,9 @@ import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-
+import { MongoIdValidationPipe } from '@project/pipes';
+import { fillDto } from '@project/helpers';
+import { LoggedUserRdo } from 'src/rdo/logged-user.rdo';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthenticationController {
@@ -20,7 +22,8 @@ export class AuthenticationController {
   @ApiResponse({ status: 409, description: 'User with this email already exists.' })
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
-    return newUser.toPOJO();
+    const userToken = await this.authService.createUserToken(newUser);
+    return fillDto(LoggedUserRdo, { ...newUser.toPOJO(), ...userToken });
   }
 
   @Post('login')
@@ -33,7 +36,8 @@ export class AuthenticationController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   public async login(@Body() dto: LoginUserDto) {
     const verifiedUser = await this.authService.verifyUser(dto);
-    return verifiedUser.toPOJO();
+    const userToken = await this.authService.createUserToken(verifiedUser);
+    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
   }
 
   @Get(':id')
@@ -45,7 +49,7 @@ export class AuthenticationController {
     type: CreateUserDto
   })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  public async show(@Param('id') id: string) {
+  public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();
   }
