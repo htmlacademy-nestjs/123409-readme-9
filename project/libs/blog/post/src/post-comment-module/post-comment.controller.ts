@@ -4,10 +4,11 @@ import { TEST_USER_ID } from '@project/core';
 import { PostCommentService } from './post-comment.service';
 import { CreatePostCommentDto } from './dto/create-post-comment.dto';
 
-@ApiTags('post-comment')
-@Controller('post-comment')
+@ApiTags('posts')
+@Controller('posts/:postId/comments')
 export class PostCommentController {
   constructor(private readonly postCommentService: PostCommentService) {}
+  
 
   @Post('create')
   @ApiOperation({ summary: 'Create new comment' })
@@ -20,6 +21,18 @@ export class PostCommentController {
   public async create(@Body() dto: CreatePostCommentDto) {
     const newPostComment = await this.postCommentService.create(dto, TEST_USER_ID);
     return newPostComment.toPOJO();
+  }
+
+  @Get('/')
+  @ApiOperation({ summary: 'Get all comments' })
+  @ApiResponse({
+    status: 200,
+    description: 'The comments have been successfully found.',
+    type: CreatePostCommentDto
+  })
+  public async find(@Param('postId') postId: string) {
+    const postComments = await this.postCommentService.findByPostId(postId);
+    return postComments.map(postComment => postComment.toPOJO());
   }
 
   @Get(':id')

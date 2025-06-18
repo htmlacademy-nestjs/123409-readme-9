@@ -50,4 +50,9 @@ export class PostCommentService {
 
     return postComment;
   }
+
+  public async findByPostId(postId: string) {
+    const postComments = await this.postCommentRepository.findByPostId(postId);
+    return postComments;
+  }
 }
