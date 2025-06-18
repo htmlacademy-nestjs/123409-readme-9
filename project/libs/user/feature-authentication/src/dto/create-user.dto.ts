@@ -12,12 +12,20 @@ export class CreateUserDto {
   public email: string;
 
   @ApiProperty({
-    description: 'User name',
-    example: 'John Doe'
+    description: 'User first name',
+    example: 'John'
   })
   @IsString()
   @IsNotEmpty()
-  public name: string;
+  public firstName: string;
+
+  @ApiProperty({
+    description: 'User last name',
+    example: 'Doe'
+  })
+  @IsString()
+  @IsNotEmpty()
+  public lastName: string;
 
   @ApiProperty({
     description: 'User password',
