@@ -19,6 +19,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dayjs": "^1.11.13",
+    "fs-extra": "^11.3.0",
     "joi": "^17.13.3",
     "mongoose": "^8.15.1",
     "passport": "^0.7.0",
@@ -43,6 +44,8 @@
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@types/bcrypt": "^5.0.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/multer": "^1.4.13",
     "@types/node": "~18.16.9",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
@@ -67,6 +70,7 @@
     "libs/blog/post",
     "libs/blog/models",
     "libs/shared/pipes",
-    "libs/file-vault/config"
+    "libs/file-vault/config",
+    "libs/file-vault/file-uploader"
   ]
 }
