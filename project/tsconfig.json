@@ -46,6 +46,9 @@
       "path": "./libs/blog/models"
     },
     {
+      "path": "./libs/shared/pipes"
+    },
+    {
       "path": "./libs/file-vault/config"
     }
   ]

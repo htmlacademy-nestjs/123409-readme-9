@@ -1,5 +1,5 @@
 {
-  "name": "@project/shared-types",
+  "name": "@project/pipes",
   "version": "0.0.1",
   "private": true,
   "main": "./dist/index.js",

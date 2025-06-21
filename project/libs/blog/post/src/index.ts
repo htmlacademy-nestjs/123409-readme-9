@@ -1,2 +1,2 @@
-export * from './post-module/post.module.js';
-export * from './post-comment-module/post-comment.module.js';
+export { PostModule } from './post-module/post.module.js';
+export { PostCommentModule } from './post-comment-module/post-comment.module.js';

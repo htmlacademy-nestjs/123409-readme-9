@@ -12,11 +12,7 @@ DocumentType = ReturnType<T['toPOJO']>
     protected readonly client: PrismaClientService,
   ) {}
 
-  protected createEntityFromDocument(document: DocumentType): T | null {
-    if (! document) {
-      return null;
-    }
-
+  protected createEntityFromDocument(document: DocumentType): T {
     return this.entityFactory.create(document as ReturnType<T['toPOJO']>);
   }
 
