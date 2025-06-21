@@ -44,6 +44,9 @@
     },
     {
       "path": "./libs/blog/models"
+    },
+    {
+      "path": "./libs/file-vault/config"
     }
   ]
 }

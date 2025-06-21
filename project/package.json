@@ -57,6 +57,7 @@
     "libs/user/*",
     "libs/shared/data-access",
     "libs/blog/post",
-    "libs/blog/models"
+    "libs/blog/models",
+    "libs/file-vault/config"
   ]
 }
