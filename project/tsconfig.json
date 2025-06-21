@@ -13,9 +13,6 @@
       "path": "./apps/notification"
     },
     {
-      "path": "./shared-types"
-    },
-    {
       "path": "./libs/shared/core"
     },
     {
@@ -40,12 +37,6 @@
       "path": "./libs/blog/models"
     },
     {
-      "path": "./libs/blog/models"
-    },
-    {
-      "path": "./libs/blog/models"
-    },
-    {
       "path": "./libs/shared/pipes"
     },
     {
@@ -53,6 +44,9 @@
     },
     {
       "path": "./libs/file-vault/file-uploader"
+    },
+    {
+      "path": "./apps/file-vault"
     }
   ]
 }

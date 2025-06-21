@@ -1,0 +1,67 @@
+{
+  "name": "@project/file-vault",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "file-vault",
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/file-vault/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "apps/file-vault/src/main.ts",
+          "tsConfig": "apps/file-vault/tsconfig.app.json",
+          "assets": [
+            "apps/file-vault/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "file-vault:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "file-vault:build:development"
+          },
+          "production": {
+            "buildTarget": "file-vault:build:production"
+          }
+        }
+      }
+    }
+  }
+}
