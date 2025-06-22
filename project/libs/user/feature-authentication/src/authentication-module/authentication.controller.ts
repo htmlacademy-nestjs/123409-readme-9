@@ -6,10 +6,16 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { MongoIdValidationPipe } from '@project/pipes';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from 'src/rdo/logged-user.rdo';
+import { NotifyService } from '@project/user-notify';
+
+
 @ApiTags('auth')
 @Controller('auth')
 export class AuthenticationController {
-  constructor(private readonly authService: AuthenticationService) {}
+  constructor(
+    private readonly authService: AuthenticationService,
+    private readonly notifyService: NotifyService
+  ) {}
 
   @Post('register')
   @ApiOperation({ summary: 'Register new user' })
@@ -22,6 +28,10 @@ export class AuthenticationController {
   @ApiResponse({ status: 409, description: 'User with this email already exists.' })
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
+
+    const { email, firstName, lastName } = newUser;
+    await this.notifyService.registerSubscriber({ email, firstName, lastName });
+
     const userToken = await this.authService.createUserToken(newUser);
     return fillDto(LoggedUserRdo, { ...newUser.toPOJO(), ...userToken });
   }
