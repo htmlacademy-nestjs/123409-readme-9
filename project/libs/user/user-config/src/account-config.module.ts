@@ -5,7 +5,7 @@ import jwtConfig from './configurations/jwt.config';
 
 import appConfig from './configurations/app.config';
 import mongoConfig from './configurations/mongo.config';
-const ENV_USERS_FILE_PATH = 'apps/user/.env';
+const ENV_USERS_FILE_PATH = 'apps/user/user.env';
 
 @Module({
   imports: [

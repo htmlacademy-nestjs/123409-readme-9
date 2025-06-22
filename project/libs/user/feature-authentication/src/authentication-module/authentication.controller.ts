@@ -5,7 +5,7 @@ import { LoginUserDto } from '../dto/login-user.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { MongoIdValidationPipe } from '@project/pipes';
 import { fillDto } from '@project/helpers';
-import { LoggedUserRdo } from 'src/rdo/logged-user.rdo';
+import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { NotifyService } from '@project/user-notify';
 
 

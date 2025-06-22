@@ -4,6 +4,12 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/notification/email-subscriber"
+    },
+    {
+      "path": "../../libs/notification/config"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ]
