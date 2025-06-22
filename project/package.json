@@ -75,6 +75,8 @@
     "libs/blog/models",
     "libs/shared/pipes",
     "libs/file-vault/config",
-    "libs/file-vault/file-uploader"
+    "libs/file-vault/file-uploader",
+    "libs/notification/config",
+    "libs/notification/email-subscriber"
   ]
 }

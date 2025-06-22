@@ -47,6 +47,12 @@
     },
     {
       "path": "./apps/file-vault"
+    },
+    {
+      "path": "./libs/notification/config"
+    },
+    {
+      "path": "./libs/notification/email-subscriber"
     }
   ]
 }

@@ -1,9 +1,9 @@
 version: '3.9'
 services:
-  typoteka.file-vault.mongo:
+  readme.file-vault.mongo:
     image: mongo:4.4
     restart: always
-    container_name: typoteka.file-vault.mongo
+    container_name: readme.file-vault.mongo
 
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
@@ -14,12 +14,12 @@ services:
       - ${MONGO_PORT}:27017
 
     volumes:
-      - typoteka.mongo.file-vault:/data/db
+      - readme.mongo.file-vault:/data/db
 
-  typeoteka.file-vault.mongo.ui:
+  readme.file-vault.mongo.ui:
     image: mongo-express:1.0-20
     restart: always
-    container_name: typoteka.file-vault.mongo.ui
+    container_name: readme.file-vault.mongo.ui
     ports:
       - 8084:8081
     environment:
@@ -27,7 +27,7 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
       ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_USER}
       ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@typoteka.file-vault.mongo:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@readme.file-vault.mongo:27017/
 
 volumes:
-  typoteka.mongo.file-vault:
+  readme.mongo.file-vault:
