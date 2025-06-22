@@ -8,10 +8,22 @@
     "emitDeclarationOnly": false,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "../../../types/**/*.d.ts"],
   "references": [
     {
       "path": "../config/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/data-access/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/core/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/pipes/tsconfig.lib.json"
+    },
+    {
+      "path": "../../shared/helpers/tsconfig.lib.json"
     }
   ]
 }

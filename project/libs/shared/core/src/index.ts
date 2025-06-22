@@ -18,3 +18,5 @@ export { TEST_USER_ID } from './lib/helpers/test-user';
 
 export type { TokenPayload } from './lib/interfaces/token-payload.interface';
 export type { Token } from './lib/interfaces/token.interface';
+export type { File } from './lib/types/file/file.interface';
+export type { StoredFile } from './lib/types/file/stored-file.interface';
