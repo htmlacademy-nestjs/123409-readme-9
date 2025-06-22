@@ -13,6 +13,9 @@
       "path": "../blog-user"
     },
     {
+      "path": "../notify"
+    },
+    {
       "path": "../../shared/helpers"
     },
     {

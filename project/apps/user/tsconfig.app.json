@@ -17,6 +17,9 @@
   "exclude": [],
   "references": [
     {
+      "path": "../../libs/user/notify/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/user/user-config/tsconfig.lib.json"
     },
     {

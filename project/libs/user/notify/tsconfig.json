@@ -4,6 +4,15 @@
   "include": [],
   "references": [
     {
+      "path": "../user-config"
+    },
+    {
+      "path": "../../shared/core"
+    },
+    {
+      "path": "../../shared/helpers"
+    },
+    {
       "path": "./tsconfig.lib.json"
     }
   ]
