@@ -11,6 +11,7 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
+import type { RequestWithTokenPayload } from './request-with-token-payload.interface';
 import type { RequestWithUser } from './request-with-user.interface';
 
 @ApiTags('auth')
@@ -84,5 +85,11 @@ export class AuthenticationController {
       throw new UnauthorizedException('User not found in request');
     }
     return this.authService.createUserToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('check')
+  public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
+    return payload;
   }
 }
