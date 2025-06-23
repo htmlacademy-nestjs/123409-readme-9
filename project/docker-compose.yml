@@ -1,0 +1,220 @@
+version: '3.9'
+
+services:
+  # Blog Service
+  blog-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: readme-blog-service
+    command: ["node", "dist/apps/blog/main.js"]
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-test}@blog-postgres:5432/${POSTGRES_DB:-readme-blog}
+    depends_on:
+      blog-postgres:
+        condition: service_healthy
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # User Service
+  user-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: readme-user-service
+    command: ["node", "dist/apps/user/main.js"]
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - MONGO_HOST=user-mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=${MONGO_DB:-readme-user}
+      - MONGO_USER=${MONGO_USER:-admin}
+      - MONGO_PASSWORD=${MONGO_PASSWORD:-test}
+    depends_on:
+      user-mongo:
+        condition: service_healthy
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # File Vault Service
+  file-vault-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: readme-file-vault-service
+    command: ["node", "dist/apps/file-vault/main.js"]
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - MONGO_HOST=file-vault-mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=${FILE_VAULT_MONGO_DB:-readme-file-vault}
+      - MONGO_USER=${FILE_VAULT_MONGO_USER:-admin}
+      - MONGO_PASSWORD=${FILE_VAULT_MONGO_PASSWORD:-test}
+      - UPLOAD_DIRECTORY_PATH=/app/uploads
+      - SERVE_ROOT=/static
+    volumes:
+      - file-vault-uploads:/app/uploads
+    depends_on:
+      file-vault-mongo:
+        condition: service_healthy
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # Notification Service
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: readme-notification-service
+    command: ["node", "dist/apps/notification/main.js"]
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # Blog PostgreSQL Database
+  blog-postgres:
+    image: postgres:14-alpine
+    container_name: readme-blog-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test}
+      POSTGRES_DB: ${POSTGRES_DB:-readme-blog}
+    ports:
+      - "5432:5432"
+    volumes:
+      - blog-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-readme-blog}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # User MongoDB Database
+  user-mongo:
+    image: mongo:4.4
+    container_name: readme-user-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-test}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-readme-user}
+    ports:
+      - "27017:27017"
+    volumes:
+      - user-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # File Vault MongoDB Database
+  file-vault-mongo:
+    image: mongo:4.4
+    container_name: readme-file-vault-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${FILE_VAULT_MONGO_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FILE_VAULT_MONGO_PASSWORD:-test}
+      MONGO_INITDB_DATABASE: ${FILE_VAULT_MONGO_DB:-readme-file-vault}
+    ports:
+      - "27018:27017"
+    volumes:
+      - file-vault-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # PgAdmin for PostgreSQL management
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: readme-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - "8082:80"
+    depends_on:
+      - blog-postgres
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # Mongo Express for User MongoDB management
+  user-mongo-express:
+    image: mongo-express:1.0.2-20
+    container_name: readme-user-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_USER:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_PASSWORD:-test}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USER:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD:-test}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USER:-admin}:${MONGO_PASSWORD:-test}@user-mongo:27017/
+    depends_on:
+      - user-mongo
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+  # Mongo Express for File Vault MongoDB management
+  file-vault-mongo-express:
+    image: mongo-express:1.0.2-20
+    container_name: readme-file-vault-mongo-express
+    ports:
+      - "8084:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${FILE_VAULT_MONGO_USER:-admin}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${FILE_VAULT_MONGO_PASSWORD:-test}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${FILE_VAULT_MONGO_USER:-admin}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${FILE_VAULT_MONGO_PASSWORD:-test}
+      ME_CONFIG_MONGODB_URL: mongodb://${FILE_VAULT_MONGO_USER:-admin}:${FILE_VAULT_MONGO_PASSWORD:-test}@file-vault-mongo:27017/
+    depends_on:
+      - file-vault-mongo
+    networks:
+      - readme-network
+    restart: unless-stopped
+
+volumes:
+  blog-postgres-data:
+  user-mongo-data:
+  file-vault-mongo-data:
+  file-vault-uploads:
+
+networks:
+  readme-network:
+    driver: bridge 

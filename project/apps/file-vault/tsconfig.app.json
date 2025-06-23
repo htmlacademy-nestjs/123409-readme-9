@@ -1,0 +1,23 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "types": [
+      "node"
+    ],
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../libs/file-vault/config/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/file-vault/file-uploader/tsconfig.lib.json"
+    }
+  ]
+}

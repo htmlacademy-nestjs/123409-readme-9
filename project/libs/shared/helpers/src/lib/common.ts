@@ -33,3 +33,12 @@ export function getMongoConnectionString({username, password, host, port, databa
 }): string {
   return `mongodb://${username}:${password}@${host}:${port}/${databaseName}?authSource=${authDatabase}`;
 }
+
+export function getRabbitMQConnectionString({user, password, host, port}: {
+  user: string;
+  password: string;
+  host: string;
+  port: number;
+}): string {
+  return `amqp://${user}:${password}@${host}:${port}`;
+}

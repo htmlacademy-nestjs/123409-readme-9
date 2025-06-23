@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/user/notify"
+    },
+    {
       "path": "../../libs/user/user-config"
     },
     {

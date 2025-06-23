@@ -7,7 +7,19 @@
       "path": "../../shared/core"
     },
     {
+      "path": "../user-config"
+    },
+    {
       "path": "../blog-user"
+    },
+    {
+      "path": "../notify"
+    },
+    {
+      "path": "../../shared/helpers"
+    },
+    {
+      "path": "../../shared/pipes"
     },
     {
       "path": "./tsconfig.lib.json"

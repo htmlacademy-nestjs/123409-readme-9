@@ -14,5 +14,13 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../libs/notification/email-subscriber/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/notification/config/tsconfig.lib.json"
+    }
+  ]
 }
