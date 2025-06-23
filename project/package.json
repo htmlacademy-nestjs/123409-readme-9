@@ -82,6 +82,7 @@
     "libs/file-vault/config",
     "libs/file-vault/file-uploader",
     "libs/notification/config",
-    "libs/notification/email-subscriber"
+    "libs/notification/email-subscriber",
+    "libs/shared/interceptors"
   ]
 }
