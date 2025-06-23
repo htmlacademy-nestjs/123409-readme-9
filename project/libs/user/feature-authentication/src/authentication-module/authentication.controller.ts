@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Get, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Req, UseGuards, UnauthorizedException, HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
@@ -8,6 +8,9 @@ import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { NotifyService } from '@project/user-notify';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+
 import type { RequestWithUser } from './request-with-user.interface';
 
 @ApiTags('auth')
@@ -54,6 +57,7 @@ export class AuthenticationController {
     return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -66,5 +70,19 @@ export class AuthenticationController {
   public async show(@Param('id', MongoIdValidationPipe) id: string) {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();
+  }
+
+  @UseGuards(JwtRefreshGuard)
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get a new access/refresh tokens'
+  })
+  public async refreshToken(@Req() { user }: RequestWithUser) {
+    if (!user) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    return this.authService.createUserToken(user);
   }
 }

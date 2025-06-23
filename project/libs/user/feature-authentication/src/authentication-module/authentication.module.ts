@@ -8,6 +8,7 @@ import { getJwtOptions } from '@project/user-config';
 import { NotifyModule } from '@project/user-notify';
 import { JwtAccessStrategy } from '../strategies/jwt-access.strategy';
 import { LocalStrategy } from '../strategies/local.strategy';
+import { JwtRefreshStrategy } from '../strategies/jwt-refresh.strategy';
 
 @Module({
   imports: [BlogUserModule, JwtModule.registerAsync({
@@ -17,6 +18,6 @@ import { LocalStrategy } from '../strategies/local.strategy';
   NotifyModule,
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, JwtAccessStrategy, LocalStrategy]
+  providers: [AuthenticationService, JwtAccessStrategy, LocalStrategy, JwtRefreshStrategy]
 })
 export class AuthenticationModule {}
