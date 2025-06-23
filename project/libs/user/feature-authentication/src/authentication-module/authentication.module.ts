@@ -7,6 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { getJwtOptions } from '@project/user-config';
 import { NotifyModule } from '@project/user-notify';
 import { JwtAccessStrategy } from '../strategies/jwt-access.strategy';
+import { LocalStrategy } from '../strategies/local.strategy';
 
 @Module({
   imports: [BlogUserModule, JwtModule.registerAsync({
@@ -16,6 +17,6 @@ import { JwtAccessStrategy } from '../strategies/jwt-access.strategy';
   NotifyModule,
   ],
   controllers: [AuthenticationController],
-  providers: [AuthenticationService, JwtAccessStrategy]
+  providers: [AuthenticationService, JwtAccessStrategy, LocalStrategy]
 })
 export class AuthenticationModule {}

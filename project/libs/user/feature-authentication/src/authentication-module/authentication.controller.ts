@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Req, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
@@ -7,7 +7,8 @@ import { MongoIdValidationPipe } from '@project/pipes';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
 import { NotifyService } from '@project/user-notify';
-
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import type { RequestWithUser } from './request-with-user.interface';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,6 +37,7 @@ export class AuthenticationController {
     return fillDto(LoggedUserRdo, { ...newUser.toPOJO(), ...userToken });
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiOperation({ summary: 'Login user' })
   @ApiResponse({
@@ -44,10 +46,12 @@ export class AuthenticationController {
     type: LoginUserDto
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  public async login(@Body() dto: LoginUserDto) {
-    const verifiedUser = await this.authService.verifyUser(dto);
-    const userToken = await this.authService.createUserToken(verifiedUser);
-    return fillDto(LoggedUserRdo, { ...verifiedUser.toPOJO(), ...userToken });
+  public async login(@Req() { user }: RequestWithUser) {
+    if (!user) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    const userToken = await this.authService.createUserToken(user);
+    return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
 
   @Get(':id')
