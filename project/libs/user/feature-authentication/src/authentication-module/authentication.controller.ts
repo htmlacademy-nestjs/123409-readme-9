@@ -33,8 +33,8 @@ export class AuthenticationController {
   public async create(@Body() dto: CreateUserDto) {
     const newUser = await this.authService.register(dto);
 
-    const { email, firstName, lastName } = newUser;
-    await this.notifyService.registerSubscriber({ email, firstName, lastName });
+    const { email, firstname, lastname } = newUser;
+    await this.notifyService.registerSubscriber({ email, firstname, lastname });
 
     const userToken = await this.authService.createUserToken(newUser);
     return fillDto(LoggedUserRdo, { ...newUser.toPOJO(), ...userToken });

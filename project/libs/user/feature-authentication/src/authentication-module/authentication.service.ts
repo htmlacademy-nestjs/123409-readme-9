@@ -32,12 +32,12 @@ export class AuthenticationService {
   ) {}
 
   public async register(dto: CreateUserDto) {
-    const { email, firstName, lastName, password } = dto;
+    const { email, firstname, lastname, password } = dto;
 
     const blogUser: AuthUser = {
       email,
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       avatar: "",
       createAt: new Date(),
       publicationsCount: 0,
@@ -93,8 +93,8 @@ export class AuthenticationService {
     const payload: TokenPayload = {
       sub: user.id!,
       email: user.email,
-      lastname: user.lastName,
-      firstname: user.firstName,
+      lastname: user.lastname,
+      firstname: user.firstname,
     };  
 
     try {
