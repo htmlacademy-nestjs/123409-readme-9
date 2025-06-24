@@ -10,6 +10,7 @@ import { NotifyService } from '@project/user-notify';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 import type { RequestWithTokenPayload } from './request-with-token-payload.interface';
 import type { RequestWithUser } from './request-with-user.interface';
@@ -91,5 +92,18 @@ export class AuthenticationController {
   @Post('check')
   public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
     return payload;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @ApiOperation({ summary: 'Change user password' })
+  @ApiResponse({ status: 200, description: 'Password changed successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async changePassword(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: ChangePasswordDto) {
+    if (!payload) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    return this.authService.changePassword(payload.sub, dto);
   }
 }

@@ -112,4 +112,17 @@ export class AuthenticationService {
       throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  public async changePassword(userId: string, dto: { oldPassword: string, newPassword: string }) {
+    const user = await this.blogUserRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+    }
+    if (!(await user.comparePassword(dto.oldPassword))) {
+      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+    }
+    await user.setPassword(dto.newPassword);
+    await this.blogUserRepository.update(user);
+    return { message: 'Password changed successfully' };
+  }
 }
