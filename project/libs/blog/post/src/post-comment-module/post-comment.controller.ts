@@ -1,8 +1,9 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { TEST_USER_ID } from '@project/core';
 import { PostCommentService } from './post-comment.service';
 import { CreatePostCommentDto } from './dto/create-post-comment.dto';
+import type { PostCommentListQuery } from './post-comment.repository';
 
 @ApiTags('posts')
 @Controller('posts/:postId/comments')
@@ -30,9 +31,12 @@ export class PostCommentController {
     description: 'The comments have been successfully found.',
     type: CreatePostCommentDto
   })
-  public async find(@Param('postId') postId: string) {
-    const postComments = await this.postCommentService.findByPostId(postId);
-    return postComments.map(postComment => postComment.toPOJO());
+  public async find(@Param('postId') postId: string, @Query() query: PostCommentListQuery) {
+    const postComments = await this.postCommentService.findByPostId(postId, query);
+    return {
+      ...postComments,
+      entities: postComments.entities.map(postComment => postComment.toPOJO())
+    };
   }
 
   @Get(':id')

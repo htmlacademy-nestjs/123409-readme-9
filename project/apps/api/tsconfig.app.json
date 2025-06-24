@@ -14,5 +14,16 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": []
+  "exclude": [],
+  "references": [
+    {
+      "path": "../../libs/shared/interceptors/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/user/feature-authentication/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/blog/post/tsconfig.lib.json"
+    }
+  ]
 }

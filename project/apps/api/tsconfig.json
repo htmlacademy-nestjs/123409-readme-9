@@ -4,6 +4,15 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/shared/interceptors"
+    },
+    {
+      "path": "../../libs/user/feature-authentication"
+    },
+    {
+      "path": "../../libs/blog/post"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ]
