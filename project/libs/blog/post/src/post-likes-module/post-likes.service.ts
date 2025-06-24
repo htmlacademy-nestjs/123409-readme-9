@@ -37,6 +37,8 @@ export class PostLikeService {
   }
 
   public async delete(postId: string, userId: string) {
+    console.log('postId3', postId);
+    console.log('userId3', userId);
     const postLike = await this.postLikeRepository.findByUserAndPost(userId, postId);
 
     if (!postLike) {
@@ -53,6 +55,7 @@ export class PostLikeService {
 
   public async findByUserId(userId: string) {
     const postLikes = await this.postLikeRepository.findByUserId(userId);
+    console.log('postLikes', postLikes);
     return postLikes;
   }
 } 

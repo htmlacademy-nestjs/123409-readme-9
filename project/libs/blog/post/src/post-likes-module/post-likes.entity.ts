@@ -16,18 +16,25 @@ export class PostLikeEntity extends Entity implements StorableEntity<PostLike> {
             return;
         }
 
-        this.id = postLike.id ?? '';
+        if(postLike.id) {
+            this.id = postLike.id;
+        }
         this.userId = postLike.userId;
         this.postId = postLike.postId;
         this.createdAt = postLike.createdAt;
     }
 
     public toPOJO(): PostLike {
-        return {
-            id: this.id,
+        const pojo: PostLike = {    
             userId: this.userId,
             postId: this.postId,
             createdAt: this.createdAt,
         };
+
+        if(this.id) {
+            pojo.id = this.id;
+        }
+
+        return pojo;
     }    
 } 

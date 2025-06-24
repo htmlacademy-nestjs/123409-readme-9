@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { PostLikeEntity } from "./post-likes.entity";
 import { BasePostgresRepository } from "@project/data-access";
 import { PostLikeFactory } from "./post-likes.factory";
@@ -61,7 +61,13 @@ export class PostLikeRepository extends BasePostgresRepository<
       orderBy: { createdAt: 'desc' }
     });
 
-    return records.map((record) => this.entityFactory.create(record));
+    Logger.log('records', records);
+
+    return records.map((record) => {
+      Logger.log('record', record);
+      Logger.log('recordCreate', this.entityFactory.create(record));
+      return this.entityFactory.create(record);
+    });
   }
 
   public async deleteByUserAndPost(userId: string, postId: string): Promise<void> {

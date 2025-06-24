@@ -31,18 +31,8 @@ export class PostLikeController {
   })
   @ApiResponse({ status: 404, description: 'Like not found.' })
   public async delete(@Param('postId') postId: string, @Body() dto: CreatePostLikeDto) {
+    console.log('postId2', postId);
     await this.postLikeService.delete(postId, dto.userId);
     return { message: 'Like deleted successfully' };
-  }
-
-  @Get('/')
-  @ApiOperation({ summary: 'Get likes' })
-  @ApiResponse({
-    status: 200,
-    description: 'The likes for current user.',
-  })
-  public async getLikes(@Body() body: { userId: string }) {
-    const likes = await this.postLikeService.findByUserId(body.userId);
-    return likes.map(like => fillDto(UserLikesRdo, like.toPOJO()));
   }
 }

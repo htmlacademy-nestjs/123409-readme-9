@@ -122,23 +122,15 @@ GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments
 ###
 
 # Create a like for a post
-POST http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes/create HTTP/1.1
-Authorization: Bearer <your_jwt_token>
+POST http://localhost:3000/api/blog/98159a90-a27a-4826-8f72-efb747a3a83e/likes/create HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwODA0MDI1LCJleHAiOjE3NTA4MDQzMjV9.Xg-o_bWY3zzIFoxFAbmJTuA9tUf-JdALKcBhyvu63M0
 Content-Type: application/json
 
 ###
 
 # Delete a like for a post
-DELETE http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes/delete HTTP/1.1
-Authorization: Bearer <your_jwt_token>
-Content-Type: application/json
-
-
-###
-
-# Get likes for a post
-GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes HTTP/1.1
-Authorization: Bearer <your_jwt_token>
+DELETE http://localhost:3000/api/blog/98159a90-a27a-4826-8f72-efb747a3a83e/likes/delete HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwODA0MDI1LCJleHAiOjE3NTA4MDQzMjV9.Xg-o_bWY3zzIFoxFAbmJTuA9tUf-JdALKcBhyvu63M0
 Content-Type: application/json
 
 

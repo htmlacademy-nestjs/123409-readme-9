@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query, Logger, Delete } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
@@ -112,6 +112,7 @@ export class BlogController {
     @Param('postId') postId: string,
     @Body() dto: CreatePostLikeDto
   ) {
+    console.log('postId2', postId);
     const { data } = await this.httpService.axiosRef.post(
       `${ApplicationServiceURL.Blog}/${postId}/likes/create`,
       dto
@@ -121,24 +122,12 @@ export class BlogController {
 
   @UseGuards(CheckAuthGuard)
   @UseInterceptors(InjectUserIdInterceptor)
-  @Post(':postId/likes/delete')
+  @Delete(':postId/likes/delete')
   public async deleteLike(
     @Param('postId') postId: string,
   ) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blog}/${postId}/likes/delete`,
-    );
-    return data;
-  }
-
-  @UseGuards(CheckAuthGuard)
-  @UseInterceptors(InjectUserIdInterceptor)
-  @Get(':postId/likes')
-  public async getLikes(
-    @Param('postId') postId: string,
-  ) {
-    const { data } = await this.httpService.axiosRef.get(
-      `${ApplicationServiceURL.Blog}/${postId}/likes`
     );
     return data;
   }
