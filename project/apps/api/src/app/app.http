@@ -50,3 +50,74 @@ Content-Type: application/json
 }
 
 ###
+
+# Create a new post
+POST http://localhost:3000/api/blog/ HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+{
+  "type": "Text",
+  "status": "Draft",
+  "content": { "text": "My first post!" },
+  "tags": ["tag1", "tag2"],
+  "isRepost": false,
+  "createdAt": "2024-03-20T12:00:00Z"
+}
+
+###
+
+# Update a post
+POST http://localhost:3000/api/blog/update HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+{
+  "id": "123e4567-e89b-12d3-a456-426614174000",
+  "type": "Text",
+  "status": "Draft",
+  "content": { "text": "Updated post content" },
+  "tags": ["tag1", "tag2"],
+  "isRepost": false,
+  "createdAt": "2024-03-20T12:00:00Z"
+}
+
+###
+
+# Get all posts
+GET http://localhost:3000/api/blog/?page=1&limit=10 HTTP/1.1
+
+###
+
+# Get post by id
+GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000 HTTP/1.1
+
+###
+
+# Delete post
+POST http://localhost:3000/api/blog/delete/123e4567-e89b-12d3-a456-426614174000 HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+
+###
+
+# Create a comment for a post
+POST http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments/create HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+{
+  "content": "This is a test comment for the post.",
+  "postId": "123e4567-e89b-12d3-a456-426614174000"
+}
+
+###
+
+# Get all comments for a post
+GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments?page=1&limit=10 HTTP/1.1
+
+###
+
+# Get a comment by id for a post
+GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments/987e6543-e21b-12d3-a456-426614174999 HTTP/1.1
+
+###
