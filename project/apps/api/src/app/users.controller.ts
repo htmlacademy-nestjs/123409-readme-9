@@ -1,7 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Body, Controller, Post, Req, UseFilters } from '@nestjs/common';
+import type { Request } from 'express';
 
-import { LoginUserDto, CreateUserDto } from '@project/feature-authentication';
+import { LoginUserDto, CreateUserDto, ChangePasswordDto } from '@project/feature-authentication';
 
 import { ApplicationServiceURL } from './app.config';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
@@ -33,6 +34,37 @@ export class UsersController {
       }
     });
 
+    return data;
+  }
+
+  @Post('check')
+  public async checkToken(@Req() req: Request) {
+    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/check`, {}, {
+      headers: {
+        'Authorization': req.headers['authorization']
+      }
+    });
+    return data;
+  }
+
+  @Post('change-password')
+  public async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
+    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/change-password`, dto, {
+      headers: {
+        'Authorization': req.headers['authorization']
+      }
+    });
+    return data;
+  }
+
+  @Post(':id')
+  public async show(@Req() req: Request) {
+    const id = req.params.id;
+    const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Users}/${id}`, {
+      headers: {
+        'Authorization': req.headers['authorization']
+      }
+    });
     return data;
   }
 }
