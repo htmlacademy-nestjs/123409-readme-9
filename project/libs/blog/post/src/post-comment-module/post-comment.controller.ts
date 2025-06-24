@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Get, Param, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@project/feature-authentication';
-import type { RequestWithTokenPayload } from '@project/feature-authentication';
 import { PostCommentService } from './post-comment.service';
 import { CreatePostCommentDto } from './dto/create-post-comment.dto';
 import type { PostCommentListQuery } from './post-comment.repository';
+import { PostCommentRdo } from './rdo/post-comment.rdo';
+import { PostCommentWithPaginationRdo } from './rdo/post-comment-with-pagination.rdo';
+import { fillDto } from '@project/helpers';
 
 @ApiTags('posts')
 @Controller('posts/:postId/comments')
@@ -12,7 +13,6 @@ export class PostCommentController {
   constructor(private readonly postCommentService: PostCommentService) {}
   
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
   @ApiOperation({ summary: 'Create new comment' })
   @ApiResponse({
@@ -21,12 +21,9 @@ export class PostCommentController {
     type: CreatePostCommentDto
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  public async create(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: CreatePostCommentDto) {
-    if (!payload) {
-      throw new Error('User not found in request');
-    }
-    const newPostComment = await this.postCommentService.create(dto, payload.sub);
-    return newPostComment.toPOJO();
+  public async create(@Body() dto: CreatePostCommentDto) {
+    const newPostComment = await this.postCommentService.create(dto, dto.userId);
+    return fillDto(PostCommentRdo, newPostComment.toPOJO());
   }
 
   @Get('/')
@@ -38,10 +35,10 @@ export class PostCommentController {
   })
   public async find(@Param('postId') postId: string, @Query() query: PostCommentListQuery) {
     const postComments = await this.postCommentService.findByPostId(postId, query);
-    return {
+    return fillDto(PostCommentWithPaginationRdo, {
       ...postComments,
-      entities: postComments.entities.map(postComment => postComment.toPOJO())
-    };
+      entities: postComments.entities.map(postComment => fillDto(PostCommentRdo, postComment.toPOJO()))
+    });
   }
 
   @Get(':id')
@@ -54,6 +51,6 @@ export class PostCommentController {
   @ApiResponse({ status: 404, description: 'Comment not found.' })
   public async findById(@Param('id') id: string) {
     const postComment = await this.postCommentService.findById(id);
-    return postComment.toPOJO();
+    return fillDto(PostCommentRdo, postComment.toPOJO());
   }
 }

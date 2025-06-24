@@ -7,6 +7,7 @@ export { ChangePasswordDto } from './dto/change-password.dto';
 export { JwtAuthGuard } from './guards/jwt-auth.guard';
 export { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 export { LocalAuthGuard } from './guards/local-auth.guard';
+export { JwtAccessStrategy } from './strategies/jwt-access.strategy';
 export type { RequestWithTokenPayload } from './authentication-module/request-with-token-payload.interface';
 export type { RequestWithUser } from './authentication-module/request-with-user.interface';
 

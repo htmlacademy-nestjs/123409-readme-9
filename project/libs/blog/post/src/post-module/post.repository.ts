@@ -123,7 +123,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       this.client.post.findMany({
         where,
         skip,
-        take: limit,
+        take: Number(limit),
         orderBy,
         include: {
           _count: {

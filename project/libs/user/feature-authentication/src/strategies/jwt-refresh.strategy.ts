@@ -12,7 +12,7 @@ import { TokenNotExistsException } from '../exceptions/token-not-exists.exceptio
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(
-    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
+    @Inject(jwtConfig.KEY) jwtOptions: ConfigType<typeof jwtConfig>,
     private readonly authService: AuthenticationService,
     private readonly refreshTokenService: RefreshTokenService,
   ) {

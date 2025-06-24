@@ -21,8 +21,8 @@ POST http://localhost:3000/api/auth/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "user@notfound.local",
-  "password": "654321"
+  "email": "ivanovaa1992@gmail.com",
+  "password": "123456"
 }
 
 ###
@@ -53,16 +53,15 @@ Content-Type: application/json
 
 # Create a new post
 POST http://localhost:3000/api/blog/ HTTP/1.1
-Authorization: Bearer <your_jwt_token>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwNzkzMjA5LCJleHAiOjE3NTA3OTM1MDl9.cMR9MNGHb_-0e4Hd3lBT8274Xqzmk3ZNA_VrLQy_U5U
 Content-Type: application/json
 
 {
-  "type": "Text",
-  "status": "Draft",
-  "content": { "text": "My first post!" },
+  "type": "text",
+  "status": "draft",
+  "content": { "title": "My first post!", "announcement": "My first post!", "content": "My first post!" },
   "tags": ["tag1", "tag2"],
   "isRepost": false,
-  "createdAt": "2024-03-20T12:00:00Z"
 }
 
 ###

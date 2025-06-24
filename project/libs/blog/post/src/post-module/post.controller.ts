@@ -1,10 +1,8 @@
-import { Controller, Post, Body, Param, Get, Put, Delete, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Put, Delete, Query } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@project/feature-authentication';
-import type { RequestWithTokenPayload } from '@project/feature-authentication';
 import type { PostListQuery } from './post.repository';
 import { PostRdo } from './rdo/post.rdo';
 import { BlogPostWithPaginationRdo } from './rdo/post-with-pagination.dto';
@@ -15,7 +13,6 @@ import { fillDto } from '@project/helpers';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('create')
   @ApiOperation({ summary: 'Create new post' })
   @ApiResponse({
@@ -24,15 +21,11 @@ export class PostController {
     type: CreatePostDto
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  public async create(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: CreatePostDto) {
-    if (!payload) {
-      throw new Error('User not found in request');
-    }
-    const newPost = await this.postService.create(dto, payload.sub);
+  public async create(@Body() dto: CreatePostDto) {
+    const newPost = await this.postService.create(dto, dto.userId);
     return fillDto(PostRdo, newPost.toPOJO());
   }
 
-  @UseGuards(JwtAuthGuard)
   @Put('update')
   @ApiOperation({ summary: 'Update post' })
   @ApiResponse({
@@ -41,11 +34,8 @@ export class PostController {
     type: UpdatePostDto
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  public async update(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: UpdatePostDto) {
-    if (!payload) {
-      throw new Error('User not found in request');
-    }
-    const updatedPost = await this.postService.update(dto, payload.sub);
+  public async update(@Body() dto: UpdatePostDto) {
+    const updatedPost = await this.postService.update(dto, dto.userId);
     return fillDto(PostRdo, updatedPost.toPOJO());
   }
 
@@ -78,15 +68,11 @@ export class PostController {
     return fillDto(PostRdo, existPost.toPOJO());
   }
 
-  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete post' })
   @ApiParam({ name: 'id', description: 'Post ID' })
   @ApiResponse({ status: 200, description: 'The post has been successfully deleted.' })
-  public async delete(@Req() { user: payload }: RequestWithTokenPayload, @Param('id') id: string) {
-    if (!payload) {
-      throw new Error('User not found in request');
-    }
-    await this.postService.delete(id, payload.sub);
+  public async delete(@Param('id') id: string, @Body() body: any) {
+    await this.postService.delete(id, body.userId);
   }
 }

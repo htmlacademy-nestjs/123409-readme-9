@@ -6,6 +6,13 @@ import { VideoPostContent, TextPostContent, QuotePostContent, PhotoPostContent, 
 
 export class CreatePostDto {
   @ApiProperty({
+    description: 'User ID',
+    example: '123e4567-e89b-12d3-a456-426614174000'
+  })
+  @IsString()
+  public userId: string;
+
+  @ApiProperty({
     description: 'Post type',
     enum: PostType,
     example: PostType.Text
