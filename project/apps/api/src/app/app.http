@@ -52,7 +52,7 @@ Content-Type: application/json
 ###
 
 # Create a new post
-POST http://localhost:3000/api/blog/ HTTP/1.1
+POST http://localhost:3000/api/blog/create HTTP/1.1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwNzkzMjA5LCJleHAiOjE3NTA3OTM1MDl9.cMR9MNGHb_-0e4Hd3lBT8274Xqzmk3ZNA_VrLQy_U5U
 Content-Type: application/json
 

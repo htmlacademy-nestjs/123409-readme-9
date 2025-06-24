@@ -8,6 +8,7 @@ import { PaginationResult, Post, SortDirection } from "@project/core";
 import { PrismaClientService } from "@project/blog-models";
 import { PostType, PostStatus, PostContent } from "@project/core";
 import { Prisma, Post as PrismaPost } from "@prisma/client";
+import { PostListQueryDto } from "./dto/post-list-query.dto";
 
 export type PostSortType = "date" | "likes" | "comments";
 
@@ -20,6 +21,7 @@ export interface PostListQuery {
   sort?: PostSortType;
   status?: PostStatus;
   sortDirection?: SortDirection;
+  title?: string;
 }
 
 @Injectable()
@@ -97,7 +99,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
   }
 
   public async find(
-    query: PostListQuery
+    query: PostListQueryDto
   ): Promise<PaginationResult<PostEntity>> {
     const {
       page = 1,
@@ -108,6 +110,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       sort = "date",
       status = PostStatus.Published,
       sortDirection = SortDirection.Desc,
+      title,
     } = query;
     const skip = page && limit ? (page - 1) * limit : undefined;
 
@@ -116,6 +119,12 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       ...(userId && { authorId: userId }),
       ...(type && { type }),
       ...(tag && { tags: { has: tag } }),
+      ...(title && {
+        content: {
+          path: ['$.title'],
+          string_contains: title,
+        },
+      }),
     };
 
     const orderBy = this.getOrderByClause(sort, sortDirection);

@@ -2,8 +2,8 @@ import { Controller, Post, Body, Param, Get, Put, Delete, Query } from '@nestjs/
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostListQueryDto } from './dto/post-list-query.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import type { PostListQuery } from './post.repository';
 import { PostRdo } from './rdo/post.rdo';
 import { BlogPostWithPaginationRdo } from './rdo/post-with-pagination.dto';
 import { fillDto } from '@project/helpers';
@@ -46,7 +46,8 @@ export class PostController {
     description: 'The posts have been successfully found.',
     type: UpdatePostDto
   })
-  public async index(@Query() query: PostListQuery) {
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async index(@Query() query: PostListQueryDto) {
     const postsWithPagination = await this.postService.find(query);
     return fillDto(BlogPostWithPaginationRdo, {
       ...postsWithPagination,

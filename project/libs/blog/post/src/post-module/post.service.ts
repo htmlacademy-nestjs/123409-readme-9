@@ -5,8 +5,9 @@ import {
 } from "@nestjs/common";
 import { Post } from "@project/core";
 
-import { PostListQuery, PostRepository } from "./post.repository";
+import { PostRepository } from "./post.repository";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { PostListQueryDto } from "./dto/post-list-query.dto";
 import { PostFactory } from "./post.factory";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { POST_NOT_FOUND } from "./post.constants";
@@ -85,7 +86,7 @@ export class PostService {
     return post;
   }
 
-  public async find(query: PostListQuery) {
+  public async find(query: PostListQueryDto) {
     return this.postRepository.find(query);
   }
 
