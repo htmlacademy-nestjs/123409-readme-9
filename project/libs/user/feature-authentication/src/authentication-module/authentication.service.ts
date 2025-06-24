@@ -6,9 +6,10 @@ import {
   NotFoundException,
   UnauthorizedException,
   Logger,
+  Inject,
 } from "@nestjs/common";
 import { BlogUserRepository, BlogUserEntity } from "@project/blog-user";
-import { AuthUser, User, TokenPayload, Token } from "@project/core";
+import { AuthUser, User,Token } from "@project/core";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { LoginUserDto } from "../dto/login-user.dto";
@@ -18,6 +19,11 @@ import {
   AUTH_USER_PASSWORD_WRONG,
 } from "./authentication.constant";
 import { JwtService } from "@nestjs/jwt";
+import type { ConfigType } from "@nestjs/config";
+import { jwtConfig } from "@project/user-config";
+import { RefreshTokenService } from "../refresh-token-module/refresh-token.service";
+import { createJWTPayload } from "@project/helpers";
+import crypto from "node:crypto";
 
 @Injectable()
 export class AuthenticationService {
@@ -25,15 +31,17 @@ export class AuthenticationService {
   constructor(
     private readonly blogUserRepository: BlogUserRepository,
     private readonly jwtService: JwtService,
+    private readonly refreshTokenService: RefreshTokenService,
+    @Inject(jwtConfig.KEY) private readonly jwtOptions: ConfigType<typeof jwtConfig>,
   ) {}
 
   public async register(dto: CreateUserDto) {
-    const { email, firstName, lastName, password } = dto;
+    const { email, firstname, lastname, password } = dto;
 
     const blogUser: AuthUser = {
       email,
-      firstName,
-      lastName,
+      firstname,
+      lastname,
       avatar: "",
       createAt: new Date(),
       publicationsCount: 0,
@@ -77,17 +85,28 @@ export class AuthenticationService {
     return user;
   }
 
+  public async getUserByEmail(email: string) {
+    const user = await this.blogUserRepository.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+    }
+  }
+
   public async createUserToken(user: User): Promise<Token> {
-    const payload: TokenPayload = {
-      sub: user.id!,
-      email: user.email,
-      lastname: user.lastName,
-      firstname: user.firstName,
-    };  
+    const accessTokenPayload = createJWTPayload(user);
+    const refreshTokenPayload = { ...accessTokenPayload, tokenId: crypto.randomUUID() };
+    await this.refreshTokenService.createRefreshSession(refreshTokenPayload);
 
     try {
-      const accessToken = await this.jwtService.signAsync(payload);
-      return { accessToken };
+      const accessToken = await this.jwtService.signAsync(accessTokenPayload);
+
+      const refreshToken = await this.jwtService.signAsync(refreshTokenPayload, {
+        secret: this.jwtOptions.refreshTokenSecret,
+        expiresIn: this.jwtOptions.refreshTokenExpiresIn
+      });
+
+      return { accessToken, refreshToken };
     } catch (error) {
       this.logger.error('[Token generation error]: ' + (error instanceof Error ? error.message : String(error)));
       throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);

@@ -56,6 +56,12 @@
     },
     {
       "path": "./libs/user/notify"
+    },
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./libs/shared/interceptors"
     }
   ]
 }

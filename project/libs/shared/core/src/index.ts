@@ -22,3 +22,5 @@ export type { File } from './lib/types/file/file.interface';
 export type { StoredFile } from './lib/types/file/stored-file.interface';
 export { RabbitRouting } from './lib/types/rabbit-routing.enum';
 export type { Subscriber } from './lib/types/subscriber/subscriber.interface';
+export type { JwtToken } from './lib/interfaces/jwt-token.interface';
+export type { RefreshTokenPayload } from './lib/interfaces/refresh-token-payload.interface';

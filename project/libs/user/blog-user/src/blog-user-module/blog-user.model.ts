@@ -9,12 +9,12 @@ export class BlogUserModel extends Document {
   @Prop({
     required: true,
   })
-  public firstName: string;
+  public firstname: string;
 
   @Prop({
     required: true,
   })
-  public lastName: string;
+  public lastname: string;
 
   @Prop({
     required: true,
