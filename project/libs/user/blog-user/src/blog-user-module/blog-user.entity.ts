@@ -12,6 +12,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
   public publicationsCount: number;
   public subscribersCount: number;
   public passwordHash: string;
+  public subscriptions: string[];
 
   constructor(user?: AuthUser) {
     super();
@@ -32,6 +33,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
     this.publicationsCount = user.publicationsCount;
     this.subscribersCount = user.subscribersCount;
     this.passwordHash = user.passwordHash;
+    this.subscriptions = user.subscriptions || [];
   }
 
   public toPOJO(): AuthUser {
@@ -45,6 +47,7 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
       publicationsCount: this.publicationsCount,
       subscribersCount: this.subscribersCount,
       passwordHash: this.passwordHash,
+      subscriptions: this.subscriptions,
     };
   }
 
@@ -56,5 +59,19 @@ export class BlogUserEntity extends Entity implements StorableEntity<AuthUser> {
 
   public async comparePassword(password: string): Promise<boolean> {
     return compare(password, this.passwordHash);
+  }
+
+  public addSubscription(publisherId: string): void {
+    if (!this.subscriptions.includes(publisherId)) {
+      this.subscriptions.push(publisherId);
+    }
+  }
+
+  public removeSubscription(publisherId: string): void {
+    this.subscriptions = this.subscriptions.filter(id => id !== publisherId);
+  }
+
+  public isSubscribedTo(publisherId: string): boolean {
+    return this.subscriptions.includes(publisherId);
   }
 }

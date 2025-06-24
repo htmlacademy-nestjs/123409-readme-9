@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
-import { Body, Controller, Post, Req, UseFilters } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseFilters } from '@nestjs/common';
 import type { Request } from 'express';
 
-import { LoginUserDto, CreateUserDto, ChangePasswordDto } from '@project/feature-authentication';
+import { LoginUserDto, CreateUserDto, ChangePasswordDto, ToggleSubscribeDto } from '@project/feature-authentication';
 
 import { ApplicationServiceURL } from './app.config';
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
@@ -57,8 +57,19 @@ export class UsersController {
     return data;
   }
 
-  @Post(':id')
+  @Post('toggle-subscribe')
+  public async toggleSubscribe(@Req() req: Request, @Body() dto: ToggleSubscribeDto) {
+    const { data } = await this.httpService.axiosRef.post(`${ApplicationServiceURL.Users}/toggle-subscribe`, dto, {
+      headers: {
+        'Authorization': req.headers['authorization']
+      }
+    });
+    return data;
+  }
+
+  @Get(':id')
   public async show(@Req() req: Request) {
+    console.log('req', req);
     const id = req.params.id;
     const { data } = await this.httpService.axiosRef.get(`${ApplicationServiceURL.Users}/${id}`, {
       headers: {

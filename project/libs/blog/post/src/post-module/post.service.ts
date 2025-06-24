@@ -110,6 +110,9 @@ export class PostService {
 
    await this.postRepository.save(repostEntity);
 
-   return {...repostEntity, likesCount: 0, commentsCount: 0};
+   repostEntity.likesCount = 0;
+   repostEntity.commentsCount = 0;
+
+   return repostEntity;
   }
 }
