@@ -103,10 +103,13 @@ export class PostService {
    repost.originalAuthorId = post.authorId;
    repost.originalPostId = post.id;
    repost.isRepost = true;
+   repost.createdAt = new Date();
+   repost.publishedAt = new Date();   
 
    const repostEntity = this.postFactory.create(repost);
 
    await this.postRepository.save(repostEntity);
-   return repostEntity;
+
+   return {...repostEntity, likesCount: 0, commentsCount: 0};
   }
 }

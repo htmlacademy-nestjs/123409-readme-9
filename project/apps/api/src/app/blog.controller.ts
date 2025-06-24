@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
-import { CreatePostDto, CreatePostCommentDto, UpdatePostDto, CreatePostLikeDto } from '@project/post';
+import { CreatePostDto, CreatePostCommentDto, UpdatePostDto, CreatePostLikeDto, RepostPostDto } from '@project/post';
 import { ApplicationServiceURL } from './app.config';
 import { InjectUserIdInterceptor } from '@project/interceptors';
 
@@ -64,6 +64,20 @@ export class BlogController {
   ) {
     const { data } = await this.httpService.axiosRef.delete(
       `${ApplicationServiceURL.Blog}/${id}`
+    );
+    return data;
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Post(':postId/repost')
+  public async repostPost(
+    @Param('postId') postId: string,
+    @Body() dto: RepostPostDto
+  ) {
+    const { data } = await this.httpService.axiosRef.post(
+      `${ApplicationServiceURL.Blog}/${postId}/repost`,
+      dto
     );
     return data;
   }

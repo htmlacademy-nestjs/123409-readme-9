@@ -47,10 +47,12 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
 
   public override async save(entity: PostEntity): Promise<PostEntity> {
     const pojo = entity.toPOJO();
+    const { id, likesCount, commentsCount, ...postData } = pojo;
+    
     const record = await this.client.post.create({
       data: {
-        ...pojo,
-        content: JSON.stringify(pojo.content),
+        ...postData,
+        content: JSON.stringify(postData.content),
       },
     });
 
@@ -89,11 +91,13 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
 
   public override async update(entity: PostEntity): Promise<void> {
     const pojo = entity.toPOJO();
+    const { likesCount, commentsCount, ...postData } = pojo;
+    
     await this.client.post.update({
       where: { id: entity.id },
       data: {
-        ...pojo,
-        content: JSON.stringify(pojo.content),
+        ...postData,
+        content: JSON.stringify(postData.content),
       },
     });
   }

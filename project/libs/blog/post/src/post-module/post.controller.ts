@@ -2,6 +2,7 @@ import { Controller, Post, Body, Param, Get, Put, Delete, Query } from '@nestjs/
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { RepostPostDto } from './dto/repost-post.dto';
 import { PostListQueryDto } from './dto/post-list-query.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { PostRdo } from './rdo/post.rdo';
@@ -37,6 +38,20 @@ export class PostController {
   public async update(@Body() dto: UpdatePostDto) {
     const updatedPost = await this.postService.update(dto, dto.userId);
     return fillDto(PostRdo, updatedPost.toPOJO());
+  }
+
+  @Post(':id/repost')
+  @ApiOperation({ summary: 'Repost a post' })
+  @ApiParam({ name: 'id', description: 'Post ID to repost' })
+  @ApiResponse({
+    status: 201,
+    description: 'The post has been successfully reposted.',
+    type: PostRdo
+  })
+  @ApiResponse({ status: 404, description: 'Post not found.' })
+  public async repost(@Param('id') id: string, @Body() dto: RepostPostDto) {
+    const repostedPost = await this.postService.repost(id, dto.userId);
+    return fillDto(PostRdo, repostedPost.toPOJO());
   }
 
   @Get('/')

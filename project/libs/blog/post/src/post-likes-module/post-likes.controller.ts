@@ -1,9 +1,7 @@
-import { Controller, Post, Delete, Param, Body, Get } from '@nestjs/common';
+import { Controller, Post, Delete, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { PostLikeService } from './post-likes.service';
 import { CreatePostLikeDto } from './dto/create-post-like.dto';
-import { UserLikesRdo } from './rdo/user-likes.rdo';
-import { fillDto } from '@project/helpers';
 
 @ApiTags('posts')
 @Controller('posts/:postId/likes')

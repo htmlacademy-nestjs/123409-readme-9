@@ -9,7 +9,9 @@ export class PostRdo {
   @Expose()
   public type: PostType;
 
-  
+  @Expose()
+  public authorId: string;
+
   @Expose()
   public status: PostStatus;
 

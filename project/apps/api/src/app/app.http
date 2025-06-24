@@ -99,6 +99,13 @@ Authorization: Bearer <your_jwt_token>
 
 ###
 
+# Repost a post
+POST http://localhost:3000/api/blog/98159a90-a27a-4826-8f72-efb747a3a83e/repost HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwODA2MTk1LCJleHAiOjE3NTA4MDY0OTV9.fS2CetMDEeTbqFrVNHVTtaOY-ieHYS3Yh07rIx00VZg
+Content-Type: application/application/json
+
+###
+
 # Create a comment for a post
 POST http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments/create HTTP/1.1
 Authorization: Bearer <your_jwt_token>
