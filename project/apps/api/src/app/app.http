@@ -120,3 +120,26 @@ GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments
 GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/comments/987e6543-e21b-12d3-a456-426614174999 HTTP/1.1
 
 ###
+
+# Create a like for a post
+POST http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes/create HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+###
+
+# Delete a like for a post
+DELETE http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes/delete HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+
+###
+
+# Get likes for a post
+GET http://localhost:3000/api/blog/123e4567-e89b-12d3-a456-426614174000/likes HTTP/1.1
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+
+
+###

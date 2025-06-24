@@ -3,7 +3,7 @@ import { HttpService } from '@nestjs/axios';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
-import { CreatePostDto, CreatePostCommentDto, UpdatePostDto } from '@project/post';
+import { CreatePostDto, CreatePostCommentDto, UpdatePostDto, CreatePostLikeDto } from '@project/post';
 import { ApplicationServiceURL } from './app.config';
 import { InjectUserIdInterceptor } from '@project/interceptors';
 
@@ -101,6 +101,44 @@ export class BlogController {
   ) {
     const { data } = await this.httpService.axiosRef.get(
       `${ApplicationServiceURL.Blog}/${postId}/comments/${id}`
+    );
+    return data;
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Post(':postId/likes/create')
+  public async createLike(
+    @Param('postId') postId: string,
+    @Body() dto: CreatePostLikeDto
+  ) {
+    const { data } = await this.httpService.axiosRef.post(
+      `${ApplicationServiceURL.Blog}/${postId}/likes/create`,
+      dto
+    );
+    return data;
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Post(':postId/likes/delete')
+  public async deleteLike(
+    @Param('postId') postId: string,
+  ) {
+    const { data } = await this.httpService.axiosRef.delete(
+      `${ApplicationServiceURL.Blog}/${postId}/likes/delete`,
+    );
+    return data;
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Get(':postId/likes')
+  public async getLikes(
+    @Param('postId') postId: string,
+  ) {
+    const { data } = await this.httpService.axiosRef.get(
+      `${ApplicationServiceURL.Blog}/${postId}/likes`
     );
     return data;
   }
