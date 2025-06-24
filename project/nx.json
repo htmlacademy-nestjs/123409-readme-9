@@ -27,8 +27,7 @@
         }
       },
       "exclude": [
-        "libs/user/feature-authentication/*",
-        "libs/user/blog-user/*"
+        "libs/user/feature-authentication/*"
       ]
     },
     {
@@ -57,7 +56,10 @@
         "typecheck": {
           "targetName": "typecheck"
         }
-      }
+      },
+      "exclude": [
+        "libs/user/blog-user/*"
+      ]
     }
   ],
   "targetDefaults": {
