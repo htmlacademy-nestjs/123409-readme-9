@@ -1,6 +1,7 @@
-import { Controller, Post, Body, Get, Param, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Query, UseGuards, Req } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { TEST_USER_ID } from '@project/core';
+import { JwtAuthGuard } from '@project/feature-authentication';
+import type { RequestWithTokenPayload } from '@project/feature-authentication';
 import { PostCommentService } from './post-comment.service';
 import { CreatePostCommentDto } from './dto/create-post-comment.dto';
 import type { PostCommentListQuery } from './post-comment.repository';
@@ -11,6 +12,7 @@ export class PostCommentController {
   constructor(private readonly postCommentService: PostCommentService) {}
   
 
+  @UseGuards(JwtAuthGuard)
   @Post('create')
   @ApiOperation({ summary: 'Create new comment' })
   @ApiResponse({
@@ -19,8 +21,11 @@ export class PostCommentController {
     type: CreatePostCommentDto
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  public async create(@Body() dto: CreatePostCommentDto) {
-    const newPostComment = await this.postCommentService.create(dto, TEST_USER_ID);
+  public async create(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: CreatePostCommentDto) {
+    if (!payload) {
+      throw new Error('User not found in request');
+    }
+    const newPostComment = await this.postCommentService.create(dto, payload.sub);
     return newPostComment.toPOJO();
   }
 
