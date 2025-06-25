@@ -17,7 +17,7 @@
     "@nestjs/mongoose": "^11.0.3",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^10.0.2",
-    "@nestjs/serve-static": "^5.0.3",
+    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/swagger": "^8.1.1",
     "@prisma/client": "^5.12.1",
     "axios": "^1.6.0",

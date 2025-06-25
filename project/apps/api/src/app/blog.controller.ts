@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query, Logger, Delete, Req } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query, Delete, Req } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import type { Request } from 'express';
 import type { TokenPayload } from '@project/core';
