@@ -4,9 +4,6 @@
   "include": [],
   "references": [
     {
-      "path": "../../shared/helpers"
-    },
-    {
       "path": "../models"
     },
     {
@@ -14,6 +11,9 @@
     },
     {
       "path": "../../shared/core"
+    },
+    {
+      "path": "../../shared/helpers"
     },
     {
       "path": "./tsconfig.lib.json"

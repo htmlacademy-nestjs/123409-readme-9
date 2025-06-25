@@ -28,6 +28,10 @@ import { EmailSubscriberController } from './email-subscriber.controller';
     EmailSubscriberService,
     EmailSubscriberRepository,
     EmailSubscriberFactory,
+  ],
+  exports: [
+    EmailSubscriberService,
+    MailModule,
   ]
 })
 export class EmailSubscriberModule {}

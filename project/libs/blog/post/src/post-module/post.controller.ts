@@ -24,6 +24,8 @@ export class PostController {
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   public async create(@Body() dto: CreatePostDto) {
+    console.log(dto);
+    console.log(dto.userId);
     const newPost = await this.postService.create(dto, dto.userId);
     return fillDto(PostRdo, newPost.toPOJO());
   }

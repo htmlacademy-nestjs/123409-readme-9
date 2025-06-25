@@ -27,9 +27,14 @@ export class PostService {
       publishedAt: new Date
     };
 
+    console.log(post)
+
     const postEntity = this.postFactory.create(post);
 
+    console.log(postEntity)
+
     await this.postRepository.save(postEntity);
+
     return postEntity;
   }
 

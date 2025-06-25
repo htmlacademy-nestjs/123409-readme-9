@@ -138,4 +138,34 @@ export class AuthenticationController {
     const subscriberId = payload.sub;
     return this.authService.toggleSubscribe(subscriberId, dto);
   }
+
+  @Get('subscribers/:publisherId')
+  @ApiOperation({ summary: 'Get subscribers of user' })
+  @ApiParam({ name: 'publisherId', description: 'Publisher ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The subscribers have been successfully found.',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          email: { type: 'string' },
+          firstname: { type: 'string' },
+          lastname: { type: 'string' }
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  public async getSubscribers(@Param('publisherId', MongoIdValidationPipe) publisherId: string) {
+    const subscribers = await this.authService.getSubscribers(publisherId);
+    return subscribers.map((subscriber: any) => ({
+      id: subscriber.id,
+      email: subscriber.email,
+      firstname: subscriber.firstname,
+      lastname: subscriber.lastname
+    }));
+  }
 }

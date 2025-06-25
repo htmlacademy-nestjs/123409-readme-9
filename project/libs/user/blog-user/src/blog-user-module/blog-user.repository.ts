@@ -39,4 +39,11 @@ export class BlogUserRepository extends BaseMongoRepository<BlogUserEntity, Blog
     const update = increment ? { $inc: { subscribersCount: 1 } } : { $inc: { subscribersCount: -1 } };
     await this.model.updateOne({ _id: publisherId }, update).exec();
   }
+
+  public async findSubscribersByPublisherId(publisherId: string): Promise<BlogUserEntity[]> {
+    const documents = await this.model.find({ subscriptions: publisherId }).exec();
+    return documents
+      .map(document => this.createEntityFromDocument(document))
+      .filter((entity): entity is BlogUserEntity => entity !== null);
+  }
 }

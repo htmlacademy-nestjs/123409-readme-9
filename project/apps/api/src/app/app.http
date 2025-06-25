@@ -3,9 +3,9 @@ POST http://localhost:3000/api/auth/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "ivanovaa1993@gmail.com",
-  "firstname": "sasha22",
-  "lastname": "ivanov22",
+  "email": "ivanovaa1994@gmail.com",
+  "firstname": "sasha5",
+  "lastname": "ivanov5",
   "password": "123456"
 }
 
@@ -33,7 +33,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODViMzcyN
 Content-Type: application/json
 
 {
-  "publisherId": " 685adcb1154ef53d878a7268"
+  "publisherId": "685adcb1154ef53d878a7268"
+
 }
 ###
 # Get new JWT pair
@@ -62,7 +63,7 @@ Content-Type: application/json
 
 # Create a new post
 POST http://localhost:3000/api/blog/create HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODVhZGNiMTE1NGVmNTNkODc4YTcyNjgiLCJlbWFpbCI6Iml2YW5vdmFhMTk5MkBnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdiIsImZpcnN0bmFtZSI6InNhc2hhIiwiaWF0IjoxNzUwNzkzMjA5LCJleHAiOjE3NTA3OTM1MDl9.cMR9MNGHb_-0e4Hd3lBT8274Xqzmk3ZNA_VrLQy_U5U
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODViMzcyNDgzYTRjY2Y0ZjM3MDc4YmYiLCJlbWFpbCI6Iml2YW5vdmFhMTk5M0BnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdjIyIiwiZmlyc3RuYW1lIjoic2FzaGEyMiIsImlhdCI6MTc1MDgxMzE0MCwiZXhwIjoxNzUwODEzNDQwfQ.P-1G_D2bDdU_uHa6a1JfiilzS5IIHUCrH1bFP4XYrTc
 Content-Type: application/json
 
 {
@@ -70,7 +71,7 @@ Content-Type: application/json
   "status": "draft",
   "content": { "title": "My first post!", "announcement": "My first post!", "content": "My first post!" },
   "tags": ["tag1", "tag2"],
-  "isRepost": false,
+  "isRepost": false
 }
 
 ###
@@ -99,7 +100,7 @@ GET http://localhost:3000/api/blog/?page=1&limit=10 HTTP/1.1
 
 # Get subscribed posts
 GET http://localhost:3000/api/blog/subscriptions?page=1&limit=10 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODViMzcyNDgzYTRjY2Y0ZjM3MDc4YmYiLCJlbWFpbCI6Iml2YW5vdmFhMTk5M0BnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdjIyIiwiZmlyc3RuYW1lIjoic2FzaGEyMiIsImlhdCI6MTc1MDgwOTc1MiwiZXhwIjoxNzUwODEwMDUyfQ.qf7uF33ESBLgprQPjNGPz_l5qcPSyzDgE4a8ZuELo_8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODViMzcyNDgzYTRjY2Y0ZjM3MDc4YmYiLCJlbWFpbCI6Iml2YW5vdmFhMTk5M0BnbWFpbC5jb20iLCJsYXN0bmFtZSI6Iml2YW5vdjIyIiwiZmlyc3RuYW1lIjoic2FzaGEyMiIsImlhdCI6MTc1MDgwOTk4NCwiZXhwIjoxNzUwODEwMjg0fQ.rToou2bouFK8R-aGe92TvtPc9_mEd_qsv6LiIthNEiI
 ###
 
 # Get post by id

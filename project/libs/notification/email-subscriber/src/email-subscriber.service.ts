@@ -23,4 +23,12 @@ export class EmailSubscriberService {
 
     return emailSubscriber;
   }
+
+  public async getAllSubscribers() {
+    return this.emailSubscriberRepository.findAll();
+  }
+
+  public async findByEmail(email: string) {
+    return this.emailSubscriberRepository.findByEmail(email);
+  }
 }

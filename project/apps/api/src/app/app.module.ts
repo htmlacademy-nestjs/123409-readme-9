@@ -4,6 +4,7 @@ import { HTTP_CLIENT_MAX_REDIRECTS, HTTP_CLIENT_TIMEOUT } from './app.config';
 import { UsersController } from './users.controller'
 import { BlogController } from './blog.controller';
 import { CheckAuthGuard } from './guards/check-auth.guard';
+import { NotifyService } from './notify.service';
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { CheckAuthGuard } from './guards/check-auth.guard';
     }),
   ],
   controllers: [UsersController, BlogController],
-  providers: [CheckAuthGuard],
+  providers: [CheckAuthGuard, NotifyService],
 })
 export class AppModule {}

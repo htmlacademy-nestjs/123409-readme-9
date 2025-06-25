@@ -160,4 +160,8 @@ export class AuthenticationService {
 
     return { isSubscribed: !isCurrentlySubscribed };
   }
+
+  public async getSubscribers(publisherId: string) {
+    return this.blogUserRepository.findSubscribersByPublisherId(publisherId);
+  }
 }
