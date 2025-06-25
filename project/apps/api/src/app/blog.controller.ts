@@ -1,11 +1,17 @@
-import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query, Logger, Delete } from '@nestjs/common';
+import { Body, Controller, Post, UseFilters, UseGuards, UseInterceptors, Param, Get, Query, Logger, Delete, Req } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import type { Request } from 'express';
+import type { TokenPayload } from '@project/core';
 
 import { AxiosExceptionFilter } from './filters/axios-exception.filter';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { CreatePostDto, CreatePostCommentDto, UpdatePostDto, CreatePostLikeDto, RepostPostDto } from '@project/post';
 import { ApplicationServiceURL } from './app.config';
 import { InjectUserIdInterceptor } from '@project/interceptors';
+
+interface RequestWithUser extends Request {
+  user?: TokenPayload;
+}
 
 @Controller('blog')
 @UseFilters(AxiosExceptionFilter)
@@ -44,6 +50,35 @@ export class BlogController {
     const { data } = await this.httpService.axiosRef.get(
       `${ApplicationServiceURL.Blog}/`,
       { params: query }
+    );
+    return data;
+  }
+
+  @UseGuards(CheckAuthGuard)
+  @UseInterceptors(InjectUserIdInterceptor)
+  @Get('subscriptions')
+  public async getSubscribedPosts(@Query() query: any, @Req() req: RequestWithUser) {
+    if (!req.user) {
+      throw new Error('User not found in request');
+    }
+    
+    const { data: userData } = await this.httpService.axiosRef.get(
+      `${ApplicationServiceURL.Users}/${req.user.sub}`,
+      {
+        headers: {
+          'Authorization': req.headers['authorization']
+        }
+      }
+    );
+    
+    const subscriptions = userData.subscriptions || [];
+    
+    const { data } = await this.httpService.axiosRef.post(
+      `${ApplicationServiceURL.Blog}/subscriptions`,
+      { 
+        subscriptions,
+        ...query
+      }
     );
     return data;
   }

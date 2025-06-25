@@ -90,6 +90,10 @@ export class PostService {
     return this.postRepository.find(query);
   }
 
+  public async findPostsBySubscriptions(subscriptions: string[], query: PostListQueryDto) {
+    return this.postRepository.findPostsBySubscriptions(subscriptions, query);
+  }
+
   public async repost(id: string, userId: string) {
     const post = await this.postRepository.findById(id);
 

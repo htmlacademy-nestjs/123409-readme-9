@@ -192,4 +192,74 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
     });
     return result.entities;
   }
+
+  public async findPostsBySubscriptions(
+    subscriptions: string[],
+    query: PostListQueryDto
+  ): Promise<PaginationResult<PostEntity>> {
+    const {
+      page = 1,
+      limit = 25,
+      type,
+      tag,
+      sort = "date",
+      status = PostStatus.Published,
+      sortDirection = SortDirection.Desc,
+      title,
+    } = query;
+    const skip = page && limit ? (page - 1) * limit : undefined;
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return {
+        entities: [],
+        totalPages: 0,
+        totalItems: 0,
+        currentPage: page,
+        itemsPerPage: limit,
+      };
+    }
+
+    const where = {
+      status,
+      authorId: { in: subscriptions },
+      ...(type && { type }),
+      ...(tag && { tags: { has: tag } }),
+      ...(title && {
+        content: {
+          path: ['$.title'],
+          string_contains: title,
+        },
+      }),
+    };
+
+    const orderBy = this.getOrderByClause(sort, sortDirection);
+    const [records, totalItems] = await Promise.all([
+      this.client.post.findMany({
+        where,
+        skip,
+        take: Number(limit),
+        orderBy,
+        include: {
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      }),
+      this.client.post.count({ where })
+    ]);
+
+    return {
+      entities: records.map((record) => {
+        const post = this.transformRecord(record);
+        return this.createEntityFromDocument(post);
+      }),
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems: totalItems,
+      currentPage: page,
+      itemsPerPage: limit,
+    };
+  }
 }

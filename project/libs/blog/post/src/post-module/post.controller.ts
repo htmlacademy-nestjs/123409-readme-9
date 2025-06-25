@@ -4,6 +4,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { RepostPostDto } from './dto/repost-post.dto';
 import { PostListQueryDto } from './dto/post-list-query.dto';
+import { SubscribedPostsQueryDto } from './dto/subscribed-posts-query.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { PostRdo } from './rdo/post.rdo';
 import { BlogPostWithPaginationRdo } from './rdo/post-with-pagination.dto';
@@ -64,6 +65,23 @@ export class PostController {
   @ApiResponse({ status: 400, description: 'Bad request.' })
   public async index(@Query() query: PostListQueryDto) {
     const postsWithPagination = await this.postService.find(query);
+    return fillDto(BlogPostWithPaginationRdo, {
+      ...postsWithPagination,
+      entities: postsWithPagination.entities.map(post => fillDto(PostRdo, post.toPOJO()))
+    });
+  }
+
+  @Post('subscriptions')
+  @ApiOperation({ summary: 'Get posts from subscribed authors' })
+  @ApiResponse({
+    status: 200,
+    description: 'The posts from subscribed authors have been successfully found.',
+    type: BlogPostWithPaginationRdo
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async getSubscribedPosts(@Body() dto: SubscribedPostsQueryDto) {
+    const { subscriptions, ...queryParams } = dto;
+    const postsWithPagination = await this.postService.findPostsBySubscriptions(subscriptions, queryParams);
     return fillDto(BlogPostWithPaginationRdo, {
       ...postsWithPagination,
       entities: postsWithPagination.entities.map(post => fillDto(PostRdo, post.toPOJO()))
