@@ -20,4 +20,30 @@ export class BlogUserRepository extends BaseMongoRepository<BlogUserEntity, Blog
     const document = await this.model.findOne({ email }).exec();
     return this.createEntityFromDocument(document);
   }
+
+  public async addSubscription(subscriberId: string, publisherId: string): Promise<void> {
+    await this.model.updateOne(
+      { _id: subscriberId },
+      { $addToSet: { subscriptions: publisherId } }
+    ).exec();
+  }
+
+  public async removeSubscription(subscriberId: string, publisherId: string): Promise<void> {
+    await this.model.updateOne(
+      { _id: subscriberId },
+      { $pull: { subscriptions: publisherId } }
+    ).exec();
+  }
+
+  public async updateSubscribersCount(publisherId: string, increment: boolean): Promise<void> {
+    const update = increment ? { $inc: { subscribersCount: 1 } } : { $inc: { subscribersCount: -1 } };
+    await this.model.updateOne({ _id: publisherId }, update).exec();
+  }
+
+  public async findSubscribersByPublisherId(publisherId: string): Promise<BlogUserEntity[]> {
+    const documents = await this.model.find({ subscriptions: publisherId }).exec();
+    return documents
+      .map(document => this.createEntityFromDocument(document))
+      .filter((entity): entity is BlogUserEntity => entity !== null);
+  }
 }

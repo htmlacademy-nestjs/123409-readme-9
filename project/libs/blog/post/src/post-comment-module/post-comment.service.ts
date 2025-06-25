@@ -5,7 +5,7 @@ import {
 import { PostComment } from "@project/core";
 
 import { PostCommentFactory } from "./post-comment.factory";
-import { PostCommentRepository } from "./post-comment.repository";
+import { PostCommentListQuery, PostCommentRepository } from "./post-comment.repository";
 import { CreatePostCommentDto } from "./dto/create-post-comment.dto";
 import { POST_COMMENT_NOT_FOUND } from "./post-comment.constants";
 
@@ -51,8 +51,8 @@ export class PostCommentService {
     return postComment;
   }
 
-  public async findByPostId(postId: string) {
-    const postComments = await this.postCommentRepository.findByPostId(postId);
+  public async findByPostId(postId: string, query: PostCommentListQuery) {
+    const postComments = await this.postCommentRepository.findByPostId(postId, query);
     return postComments;
   }
 }

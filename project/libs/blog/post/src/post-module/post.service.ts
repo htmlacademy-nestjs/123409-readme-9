@@ -5,8 +5,9 @@ import {
 } from "@nestjs/common";
 import { Post } from "@project/core";
 
-import { PostListQuery, PostRepository } from "./post.repository";
+import { PostRepository } from "./post.repository";
 import { CreatePostDto } from "./dto/create-post.dto";
+import { PostListQueryDto } from "./dto/post-list-query.dto";
 import { PostFactory } from "./post.factory";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { POST_NOT_FOUND } from "./post.constants";
@@ -26,9 +27,14 @@ export class PostService {
       publishedAt: new Date
     };
 
+    console.log(post)
+
     const postEntity = this.postFactory.create(post);
 
+    console.log(postEntity)
+
     await this.postRepository.save(postEntity);
+
     return postEntity;
   }
 
@@ -85,8 +91,12 @@ export class PostService {
     return post;
   }
 
-  public async find(query: PostListQuery) {
+  public async find(query: PostListQueryDto) {
     return this.postRepository.find(query);
+  }
+
+  public async findPostsBySubscriptions(subscriptions: string[], query: PostListQueryDto) {
+    return this.postRepository.findPostsBySubscriptions(subscriptions, query);
   }
 
   public async repost(id: string, userId: string) {
@@ -102,10 +112,16 @@ export class PostService {
    repost.originalAuthorId = post.authorId;
    repost.originalPostId = post.id;
    repost.isRepost = true;
+   repost.createdAt = new Date();
+   repost.publishedAt = new Date();   
 
    const repostEntity = this.postFactory.create(repost);
 
    await this.postRepository.save(repostEntity);
+
+   repostEntity.likesCount = 0;
+   repostEntity.commentsCount = 0;
+
    return repostEntity;
   }
 }

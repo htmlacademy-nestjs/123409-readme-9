@@ -20,8 +20,8 @@ export class CreatePostCommentDto {
     postId: string;
     
     @ApiProperty({
-        description: 'Author ID',
+        description: 'User ID',
         example: '123e4567-e89b-12d3-a456-426614174000'
     })
-    authorId: string;
+    userId: string;
 } 

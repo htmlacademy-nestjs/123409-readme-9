@@ -2,7 +2,8 @@ import { Controller, Post, Body, Param, Get, Req, UseGuards, UnauthorizedExcepti
 import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginUserDto } from '../dto/login-user.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ToggleSubscribeDto } from '../dto/toggle-subscribe.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth } from '@nestjs/swagger';
 import { MongoIdValidationPipe } from '@project/pipes';
 import { fillDto } from '@project/helpers';
 import { LoggedUserRdo } from '../rdo/logged-user.rdo';
@@ -10,6 +11,7 @@ import { NotifyService } from '@project/user-notify';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 
 import type { RequestWithTokenPayload } from './request-with-token-payload.interface';
 import type { RequestWithUser } from './request-with-user.interface';
@@ -58,7 +60,6 @@ export class AuthenticationController {
     return fillDto(LoggedUserRdo, { ...user.toPOJO(), ...userToken });
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get user by id' })
   @ApiParam({ name: 'id', description: 'User ID' })
@@ -72,6 +73,7 @@ export class AuthenticationController {
     const existUser = await this.authService.getUser(id);
     return existUser.toPOJO();
   }
+
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
@@ -91,5 +93,79 @@ export class AuthenticationController {
   @Post('check')
   public async checkToken(@Req() { user: payload }: RequestWithTokenPayload) {
     return payload;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  @ApiOperation({ summary: 'Change user password' })
+  @ApiResponse({ status: 200, description: 'Password changed successfully.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async changePassword(@Req() { user: payload }: RequestWithTokenPayload, @Body() dto: ChangePasswordDto) {
+    if (!payload) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    return this.authService.changePassword(payload.sub, dto);
+  }
+
+  @Post('toggle-subscribe')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Toggle subscription to user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Subscription toggled successfully',
+    schema: {
+      type: 'object',
+      properties: {
+        isSubscribed: {
+          type: 'boolean',
+          description: 'Whether user is now subscribed'
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  public async toggleSubscribe(
+    @Body() dto: ToggleSubscribeDto,
+    @Req() { user: payload }: RequestWithTokenPayload
+  ) {
+    if (!payload) {
+      throw new UnauthorizedException('User not found in request');
+    }
+    const subscriberId = payload.sub;
+    return this.authService.toggleSubscribe(subscriberId, dto);
+  }
+
+  @Get('subscribers/:publisherId')
+  @ApiOperation({ summary: 'Get subscribers of user' })
+  @ApiParam({ name: 'publisherId', description: 'Publisher ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The subscribers have been successfully found.',
+    schema: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: { type: 'string' },
+          email: { type: 'string' },
+          firstname: { type: 'string' },
+          lastname: { type: 'string' }
+        }
+      }
+    }
+  })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  public async getSubscribers(@Param('publisherId', MongoIdValidationPipe) publisherId: string) {
+    const subscribers = await this.authService.getSubscribers(publisherId);
+    return subscribers.map((subscriber: any) => ({
+      id: subscriber.id,
+      email: subscriber.email,
+      firstname: subscriber.firstname,
+      lastname: subscriber.lastname
+    }));
   }
 }

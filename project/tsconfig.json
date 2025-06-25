@@ -62,6 +62,15 @@
     },
     {
       "path": "./libs/shared/interceptors"
+    },
+    {
+      "path": "./libs/user/blog-user"
+    },
+    {
+      "path": "./libs/user/feature-authentication"
+    },
+    {
+      "path": "./libs/blog/post"
     }
   ]
 }

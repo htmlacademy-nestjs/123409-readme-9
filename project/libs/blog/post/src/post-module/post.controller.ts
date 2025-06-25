@@ -2,9 +2,10 @@ import { Controller, Post, Body, Param, Get, Put, Delete, Query } from '@nestjs/
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { RepostPostDto } from './dto/repost-post.dto';
+import { PostListQueryDto } from './dto/post-list-query.dto';
+import { SubscribedPostsQueryDto } from './dto/subscribed-posts-query.dto';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { TEST_USER_ID } from '@project/core';
-import type { PostListQuery } from './post.repository';
 import { PostRdo } from './rdo/post.rdo';
 import { BlogPostWithPaginationRdo } from './rdo/post-with-pagination.dto';
 import { fillDto } from '@project/helpers';
@@ -23,7 +24,9 @@ export class PostController {
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   public async create(@Body() dto: CreatePostDto) {
-    const newPost = await this.postService.create(dto, TEST_USER_ID);
+    console.log(dto);
+    console.log(dto.userId);
+    const newPost = await this.postService.create(dto, dto.userId);
     return fillDto(PostRdo, newPost.toPOJO());
   }
 
@@ -36,8 +39,22 @@ export class PostController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   public async update(@Body() dto: UpdatePostDto) {
-    const updatedPost = await this.postService.update(dto, TEST_USER_ID);
+    const updatedPost = await this.postService.update(dto, dto.userId);
     return fillDto(PostRdo, updatedPost.toPOJO());
+  }
+
+  @Post(':id/repost')
+  @ApiOperation({ summary: 'Repost a post' })
+  @ApiParam({ name: 'id', description: 'Post ID to repost' })
+  @ApiResponse({
+    status: 201,
+    description: 'The post has been successfully reposted.',
+    type: PostRdo
+  })
+  @ApiResponse({ status: 404, description: 'Post not found.' })
+  public async repost(@Param('id') id: string, @Body() dto: RepostPostDto) {
+    const repostedPost = await this.postService.repost(id, dto.userId);
+    return fillDto(PostRdo, repostedPost.toPOJO());
   }
 
   @Get('/')
@@ -47,8 +64,26 @@ export class PostController {
     description: 'The posts have been successfully found.',
     type: UpdatePostDto
   })
-  public async index(@Query() query: PostListQuery) {
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async index(@Query() query: PostListQueryDto) {
     const postsWithPagination = await this.postService.find(query);
+    return fillDto(BlogPostWithPaginationRdo, {
+      ...postsWithPagination,
+      entities: postsWithPagination.entities.map(post => fillDto(PostRdo, post.toPOJO()))
+    });
+  }
+
+  @Post('subscriptions')
+  @ApiOperation({ summary: 'Get posts from subscribed authors' })
+  @ApiResponse({
+    status: 200,
+    description: 'The posts from subscribed authors have been successfully found.',
+    type: BlogPostWithPaginationRdo
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  public async getSubscribedPosts(@Body() dto: SubscribedPostsQueryDto) {
+    const { subscriptions, ...queryParams } = dto;
+    const postsWithPagination = await this.postService.findPostsBySubscriptions(subscriptions, queryParams);
     return fillDto(BlogPostWithPaginationRdo, {
       ...postsWithPagination,
       entities: postsWithPagination.entities.map(post => fillDto(PostRdo, post.toPOJO()))
@@ -73,7 +108,7 @@ export class PostController {
   @ApiOperation({ summary: 'Delete post' })
   @ApiParam({ name: 'id', description: 'Post ID' })
   @ApiResponse({ status: 200, description: 'The post has been successfully deleted.' })
-  public async delete(@Param('id') id: string) {
-    await this.postService.delete(id, TEST_USER_ID);
+  public async delete(@Param('id') id: string, @Body() body: any) {
+    await this.postService.delete(id, body.userId);
   }
 }

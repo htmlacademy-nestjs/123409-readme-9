@@ -13,6 +13,7 @@ export { PostType, PostStatus } from './lib/types/blog/post-type.enum';
 export type { VideoPostContent, TextPostContent, QuotePostContent, PhotoPostContent, LinkPostContent, PostContent } from './lib/types/blog/post-content.interface';
 
 export type { PostComment } from './lib/types/blog/post-comment.interface';
+export type { PostLike } from './lib/types/blog/post-like.interface';
 
 export { TEST_USER_ID } from './lib/helpers/test-user';
 

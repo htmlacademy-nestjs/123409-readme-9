@@ -6,6 +6,7 @@ import {
   Logger,
   NestInterceptor
 } from '@nestjs/common';
+import { Request } from 'express';
 
 export class RequestIdInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

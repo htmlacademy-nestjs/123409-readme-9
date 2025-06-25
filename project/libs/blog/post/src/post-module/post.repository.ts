@@ -8,6 +8,7 @@ import { PaginationResult, Post, SortDirection } from "@project/core";
 import { PrismaClientService } from "@project/blog-models";
 import { PostType, PostStatus, PostContent } from "@project/core";
 import { Prisma, Post as PrismaPost } from "@prisma/client";
+import { PostListQueryDto } from "./dto/post-list-query.dto";
 
 export type PostSortType = "date" | "likes" | "comments";
 
@@ -20,6 +21,7 @@ export interface PostListQuery {
   sort?: PostSortType;
   status?: PostStatus;
   sortDirection?: SortDirection;
+  title?: string;
 }
 
 @Injectable()
@@ -45,10 +47,12 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
 
   public override async save(entity: PostEntity): Promise<PostEntity> {
     const pojo = entity.toPOJO();
+    const { id, likesCount, commentsCount, ...postData } = pojo;
+    
     const record = await this.client.post.create({
       data: {
-        ...pojo,
-        content: JSON.stringify(pojo.content),
+        ...postData,
+        content: JSON.stringify(postData.content),
       },
     });
 
@@ -87,17 +91,19 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
 
   public override async update(entity: PostEntity): Promise<void> {
     const pojo = entity.toPOJO();
+    const { likesCount, commentsCount, ...postData } = pojo;
+    
     await this.client.post.update({
       where: { id: entity.id },
       data: {
-        ...pojo,
-        content: JSON.stringify(pojo.content),
+        ...postData,
+        content: JSON.stringify(postData.content),
       },
     });
   }
 
   public async find(
-    query: PostListQuery
+    query: PostListQueryDto
   ): Promise<PaginationResult<PostEntity>> {
     const {
       page = 1,
@@ -108,6 +114,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       sort = "date",
       status = PostStatus.Published,
       sortDirection = SortDirection.Desc,
+      title,
     } = query;
     const skip = page && limit ? (page - 1) * limit : undefined;
 
@@ -116,6 +123,12 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       ...(userId && { authorId: userId }),
       ...(type && { type }),
       ...(tag && { tags: { has: tag } }),
+      ...(title && {
+        content: {
+          path: ['$.title'],
+          string_contains: title,
+        },
+      }),
     };
 
     const orderBy = this.getOrderByClause(sort, sortDirection);
@@ -123,7 +136,7 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       this.client.post.findMany({
         where,
         skip,
-        take: limit,
+        take: Number(limit),
         orderBy,
         include: {
           _count: {
@@ -178,5 +191,75 @@ export class PostRepository extends BasePostgresRepository<PostEntity, Post> {
       status: PostStatus.Draft,
     });
     return result.entities;
+  }
+
+  public async findPostsBySubscriptions(
+    subscriptions: string[],
+    query: PostListQueryDto
+  ): Promise<PaginationResult<PostEntity>> {
+    const {
+      page = 1,
+      limit = 25,
+      type,
+      tag,
+      sort = "date",
+      status = PostStatus.Published,
+      sortDirection = SortDirection.Desc,
+      title,
+    } = query;
+    const skip = page && limit ? (page - 1) * limit : undefined;
+
+    if (!subscriptions || subscriptions.length === 0) {
+      return {
+        entities: [],
+        totalPages: 0,
+        totalItems: 0,
+        currentPage: page,
+        itemsPerPage: limit,
+      };
+    }
+
+    const where = {
+      status,
+      authorId: { in: subscriptions },
+      ...(type && { type }),
+      ...(tag && { tags: { has: tag } }),
+      ...(title && {
+        content: {
+          path: ['$.title'],
+          string_contains: title,
+        },
+      }),
+    };
+
+    const orderBy = this.getOrderByClause(sort, sortDirection);
+    const [records, totalItems] = await Promise.all([
+      this.client.post.findMany({
+        where,
+        skip,
+        take: Number(limit),
+        orderBy,
+        include: {
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
+        },
+      }),
+      this.client.post.count({ where })
+    ]);
+
+    return {
+      entities: records.map((record) => {
+        const post = this.transformRecord(record);
+        return this.createEntityFromDocument(post);
+      }),
+      totalPages: Math.ceil(totalItems / limit),
+      totalItems: totalItems,
+      currentPage: page,
+      itemsPerPage: limit,
+    };
   }
 }

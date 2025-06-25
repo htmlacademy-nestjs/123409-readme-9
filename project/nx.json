@@ -25,11 +25,7 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
-      },
-      "exclude": [
-        "libs/user/feature-authentication/*",
-        "libs/user/blog-user/*"
-      ]
+      }
     },
     {
       "plugin": "@nx/webpack/plugin",
@@ -57,7 +53,11 @@
         "typecheck": {
           "targetName": "typecheck"
         }
-      }
+      },
+      "exclude": [
+        "libs/user/blog-user/*",
+        "libs/user/feature-authentication/*"
+      ]
     }
   ],
   "targetDefaults": {

@@ -14,10 +14,10 @@
       "default": "./dist/index.js"
     }
   },
+  "nx": {
+    "name": "post"
+  },
   "dependencies": {
     "tslib": "^2.3.0"
-  },
-  "scripts": {
-    "lint": "echo 'Lint skipped'; exit 0"
   }
 }

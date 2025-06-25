@@ -7,12 +7,14 @@ import {
   UnauthorizedException,
   Logger,
   Inject,
+  BadRequestException,
 } from "@nestjs/common";
 import { BlogUserRepository, BlogUserEntity } from "@project/blog-user";
 import { AuthUser, User,Token } from "@project/core";
 
 import { CreateUserDto } from "../dto/create-user.dto";
 import { LoginUserDto } from "../dto/login-user.dto";
+import { ToggleSubscribeDto } from "../dto/toggle-subscribe.dto";
 import {
   AUTH_USER_EXISTS,
   AUTH_USER_NOT_FOUND,
@@ -47,6 +49,7 @@ export class AuthenticationService {
       publicationsCount: 0,
       subscribersCount: 0,
       passwordHash: "",
+      subscriptions: [],
     };
 
     const existUser = await this.blogUserRepository.findByEmail(email);
@@ -111,5 +114,54 @@ export class AuthenticationService {
       this.logger.error('[Token generation error]: ' + (error instanceof Error ? error.message : String(error)));
       throw new HttpException('Ошибка при создании токена.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public async changePassword(userId: string, dto: { oldPassword: string, newPassword: string }) {
+    const user = await this.blogUserRepository.findById(userId);
+    if (!user) {
+      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+    }
+    if (!(await user.comparePassword(dto.oldPassword))) {
+      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+    }
+    await user.setPassword(dto.newPassword);
+    await this.blogUserRepository.update(user);
+    return { message: 'Password changed successfully' };
+  }
+
+  public async toggleSubscribe(subscriberId: string, dto: ToggleSubscribeDto): Promise<{ isSubscribed: boolean }> {
+    const { publisherId } = dto;
+
+    if (subscriberId === publisherId) {
+      throw new BadRequestException('Cannot subscribe to yourself');
+    }
+
+    const subscriber = await this.blogUserRepository.findById(subscriberId);
+    if (!subscriber) {
+      throw new NotFoundException('Subscriber not found');
+    }
+
+    const publisher = await this.blogUserRepository.findById(publisherId);
+    if (!publisher) {
+      throw new NotFoundException('Publisher not found');
+    }
+
+    const isCurrentlySubscribed = subscriber.isSubscribedTo(publisherId);
+
+    if (isCurrentlySubscribed) {
+      await this.blogUserRepository.removeSubscription(subscriberId, publisherId);
+      await this.blogUserRepository.updateSubscribersCount(publisherId, false);
+      subscriber.removeSubscription(publisherId);
+    } else {
+      await this.blogUserRepository.addSubscription(subscriberId, publisherId);
+      await this.blogUserRepository.updateSubscribersCount(publisherId, true);
+      subscriber.addSubscription(publisherId);
+    }
+
+    return { isSubscribed: !isCurrentlySubscribed };
+  }
+
+  public async getSubscribers(publisherId: string) {
+    return this.blogUserRepository.findSubscribersByPublisherId(publisherId);
   }
 }
