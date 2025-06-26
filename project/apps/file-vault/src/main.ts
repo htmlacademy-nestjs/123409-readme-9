@@ -9,10 +9,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app/app.module';
 
+const GLOBAL_PREFIX = 'api';
+const DEFAULT_PORT = 3003;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(GLOBAL_PREFIX);
 
   // Swagger configuration
   const config = new DocumentBuilder()
@@ -24,10 +26,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.PORT || 3003;
+  const port = process.env.PORT || DEFAULT_PORT;
   await app.listen(port);
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`
+    `🚀 Application is running on: http://localhost:${port}/${GLOBAL_PREFIX}`
   );
   Logger.log(`📚 Swagger documentation is available at: http://localhost:${port}/api/docs`);
 }

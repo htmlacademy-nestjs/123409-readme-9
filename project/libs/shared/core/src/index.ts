@@ -15,8 +15,6 @@ export type { VideoPostContent, TextPostContent, QuotePostContent, PhotoPostCont
 export type { PostComment } from './lib/types/blog/post-comment.interface';
 export type { PostLike } from './lib/types/blog/post-like.interface';
 
-export { TEST_USER_ID } from './lib/helpers/test-user';
-
 export type { TokenPayload } from './lib/interfaces/token-payload.interface';
 export type { Token } from './lib/interfaces/token.interface';
 export type { File } from './lib/types/file/file.interface';

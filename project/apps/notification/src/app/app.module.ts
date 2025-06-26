@@ -3,7 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { NotifyConfigModule, getMongooseOptions } from '@project/notification-config';
 import { EmailSubscriberModule } from '@project/email-subscriber';
-import { NotificationController } from './notification.controller';
 
 @Module({
   imports: [
@@ -11,7 +10,7 @@ import { NotificationController } from './notification.controller';
     NotifyConfigModule,
     EmailSubscriberModule
   ],
-  controllers: [NotificationController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}

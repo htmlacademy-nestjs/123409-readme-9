@@ -1,17 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ApplicationServiceURL } from './app.config';
-
-export interface NewPostNotifyDto {
-  postId: string;
-  authorId: string;
-  authorFirstname: string;
-  authorLastname: string;
-  postType: string;
-  postTitle: string;
-  tags?: string[];
-  subscriberEmails?: string[];
-}
+import { NewPostNotifyDto } from '@project/email-subscriber';
 
 @Injectable()
 export class NotifyService {
