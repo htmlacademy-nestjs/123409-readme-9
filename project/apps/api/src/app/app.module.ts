@@ -5,6 +5,7 @@ import { UsersController } from './users.controller'
 import { BlogController } from './blog.controller';
 import { CheckAuthGuard } from './guards/check-auth.guard';
 import { NotifyService } from './notify.service';
+import { BlogService } from './blog.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { NotifyService } from './notify.service';
     }),
   ],
   controllers: [UsersController, BlogController],
-  providers: [CheckAuthGuard, NotifyService],
+  providers: [CheckAuthGuard, NotifyService, BlogService],
 })
 export class AppModule {}

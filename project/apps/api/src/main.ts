@@ -10,6 +10,7 @@ import { AppModule } from './app/app.module';
 import { RequestIdInterceptor } from '@project/interceptors';
 
 const GLOBAL_PREFIX = 'api';
+const DEFAULT_PORT = 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
   
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || DEFAULT_PORT;
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/${GLOBAL_PREFIX}`);
   Logger.log(`📚 Swagger documentation is available at: http://localhost:${port}/api/docs`);

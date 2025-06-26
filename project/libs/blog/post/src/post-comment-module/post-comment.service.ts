@@ -7,7 +7,7 @@ import { PostComment } from "@project/core";
 import { PostCommentFactory } from "./post-comment.factory";
 import { PostCommentListQuery, PostCommentRepository } from "./post-comment.repository";
 import { CreatePostCommentDto } from "./dto/create-post-comment.dto";
-import { POST_COMMENT_NOT_FOUND } from "./post-comment.constants";
+import { postCommentErrors } from "./post-comment.constants";
 
 @Injectable()
 export class PostCommentService {
@@ -34,7 +34,7 @@ export class PostCommentService {
     const postComment = await this.postCommentRepository.findById(id);
 
     if (!postComment) {
-      throw new NotFoundException(POST_COMMENT_NOT_FOUND);
+      throw new NotFoundException(postCommentErrors.NOT_FOUND);
     }
 
     await this.postCommentRepository.deleteById(id);
@@ -45,7 +45,7 @@ export class PostCommentService {
     const postComment = await this.postCommentRepository.findById(id);
 
     if (!postComment) {
-      throw new NotFoundException(POST_COMMENT_NOT_FOUND);
+      throw new NotFoundException(postCommentErrors.NOT_FOUND);
     }
 
     return postComment;

@@ -6,6 +6,7 @@ import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { NewPostNotifyDto } from './dto/new-post-notify.dto';
 import { RabbitRouting } from '@project/core';
 import { MailService } from './mail-module/mail.service';
+import { NotificationService } from './notification.service';
 
 
 @Controller()
@@ -13,6 +14,7 @@ export class EmailSubscriberController {
   constructor(
     private readonly subscriberService: EmailSubscriberService,
     private readonly mailService: MailService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @RabbitSubscribe({
@@ -31,23 +33,6 @@ export class EmailSubscriberController {
     queue: 'readme.notify.new-post',
   })
   public async notifyNewPost(postData: NewPostNotifyDto) {
-    if (!postData.subscriberEmails || postData.subscriberEmails.length === 0) {
-      console.log('No subscribers to notify for post:', postData.postId);
-      return;
-    }
-
-    // Получаем подписчиков по их email адресам
-    const subscribers = await Promise.all(
-      postData.subscriberEmails.map((email: string) => 
-        this.subscriberService.findByEmail(email)
-      )
-    );
-
-
-    for (const subscriber of subscribers) {
-      if (subscriber) {
-        await this.mailService.sendNotifyNewPost(subscriber, postData);
-      }
-    }
+    await this.notificationService.notifyNewPost(postData);
   }
 }

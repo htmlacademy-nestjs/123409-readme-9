@@ -7,6 +7,9 @@
       "path": "../../libs/user/feature-authentication"
     },
     {
+      "path": "../../libs/notification/email-subscriber"
+    },
+    {
       "path": "../../libs/shared/interceptors"
     },
     {

@@ -16,9 +16,7 @@ import { CreateUserDto } from "../dto/create-user.dto";
 import { LoginUserDto } from "../dto/login-user.dto";
 import { ToggleSubscribeDto } from "../dto/toggle-subscribe.dto";
 import {
-  AUTH_USER_EXISTS,
-  AUTH_USER_NOT_FOUND,
-  AUTH_USER_PASSWORD_WRONG,
+  authenticationErrors,
 } from "./authentication.constant";
 import { JwtService } from "@nestjs/jwt";
 import type { ConfigType } from "@nestjs/config";
@@ -55,7 +53,7 @@ export class AuthenticationService {
     const existUser = await this.blogUserRepository.findByEmail(email);
 
     if (existUser) {
-      throw new ConflictException(AUTH_USER_EXISTS);
+      throw new ConflictException(authenticationErrors.USER_EXISTS);
     }
 
     const userEntity = await new BlogUserEntity(blogUser).setPassword(password);
@@ -68,11 +66,11 @@ export class AuthenticationService {
     const existUser = await this.blogUserRepository.findByEmail(email);
 
     if (!existUser) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
 
     if (!(await existUser.comparePassword(password))) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+      throw new UnauthorizedException(authenticationErrors.PASSWORD_WRONG);
     }
 
     return existUser;
@@ -82,7 +80,7 @@ export class AuthenticationService {
     const user = await this.blogUserRepository.findById(id);
 
     if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
 
     return user;
@@ -92,7 +90,7 @@ export class AuthenticationService {
     const user = await this.blogUserRepository.findByEmail(email);
 
     if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
   }
 
@@ -119,10 +117,10 @@ export class AuthenticationService {
   public async changePassword(userId: string, dto: { oldPassword: string, newPassword: string }) {
     const user = await this.blogUserRepository.findById(userId);
     if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
     if (!(await user.comparePassword(dto.oldPassword))) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+      throw new UnauthorizedException(authenticationErrors.PASSWORD_WRONG);
     }
     await user.setPassword(dto.newPassword);
     await this.blogUserRepository.update(user);
@@ -133,17 +131,17 @@ export class AuthenticationService {
     const { publisherId } = dto;
 
     if (subscriberId === publisherId) {
-      throw new BadRequestException('Cannot subscribe to yourself');
+      throw new BadRequestException(authenticationErrors.SUBSCRIBE_TO_YOURSELF);
     }
 
     const subscriber = await this.blogUserRepository.findById(subscriberId);
     if (!subscriber) {
-      throw new NotFoundException('Subscriber not found');
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
 
     const publisher = await this.blogUserRepository.findById(publisherId);
     if (!publisher) {
-      throw new NotFoundException('Publisher not found');
+      throw new NotFoundException(authenticationErrors.USER_NOT_FOUND);
     }
 
     const isCurrentlySubscribed = subscriber.isSubscribedTo(publisherId);
