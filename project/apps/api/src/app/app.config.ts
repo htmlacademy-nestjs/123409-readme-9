@@ -5,6 +5,8 @@ export enum ApplicationServiceURL {
   Notification = "http://localhost:3004/api/notifications",
 }
 
-export const HTTP_CLIENT_MAX_REDIRECTS = 5;
-export const HTTP_CLIENT_TIMEOUT = 3000;
+export const httpClient = {
+  MAX_REDIRECTS: 5,
+  TIMEOUT: 3000,
+}
     

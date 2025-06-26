@@ -7,7 +7,7 @@ import { PostLike } from "@project/core";
 
 import { PostLikeFactory } from "./post-likes.factory";
 import { PostLikeRepository } from "./post-likes.repository";
-import { POST_LIKE_NOT_FOUND, POST_LIKE_ALREADY_EXISTS } from "./post-likes.constants";
+import { postLikeMessages } from "./post-likes.constants";
 
 @Injectable()
 export class PostLikeService {
@@ -21,7 +21,7 @@ export class PostLikeService {
     const existingLike = await this.postLikeRepository.findByUserAndPost(userId, postId);
     
     if (existingLike) {
-      throw new ConflictException(POST_LIKE_ALREADY_EXISTS);
+      throw new ConflictException(postLikeMessages.ALREADY_EXISTS);
     }
 
     const postLike: PostLike = {
@@ -42,7 +42,7 @@ export class PostLikeService {
     const postLike = await this.postLikeRepository.findByUserAndPost(userId, postId);
 
     if (!postLike) {
-      throw new NotFoundException(POST_LIKE_NOT_FOUND);
+      throw new NotFoundException(postLikeMessages.NOT_FOUND);
     }
 
     await this.postLikeRepository.deleteByUserAndPost(userId, postId);

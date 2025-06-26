@@ -5,7 +5,7 @@ import { ConfigType } from '@nestjs/config';
 import { Subscriber } from '@project/core';
 import { NotifyConfig } from '@project/notification-config';
 
-import { EMAIL_ADD_SUBSCRIBER_SUBJECT, EMAIL_NEW_POST_SUBJECT } from './mail.constant';
+import { emailMessages } from './mail.constant';
 import { NewPostNotifyDto } from '../dto/new-post-notify.dto';
 
 type NotifyConfig = ConfigType<typeof NotifyConfig>;
@@ -21,7 +21,7 @@ export class MailService {
     await this.mailerService.sendMail({
       from: this.notifyConfig.mail.from,
       to: subscriber.email, 
-      subject: EMAIL_ADD_SUBSCRIBER_SUBJECT,
+      subject: emailMessages.ADD_SUBSCRIBER_SUBJECT,
       template: './add-subscriber',
       context: {
         user: `${subscriber.firstname} ${subscriber.lastname}`,
@@ -34,7 +34,7 @@ export class MailService {
     await this.mailerService.sendMail({
       from: this.notifyConfig.mail.from,
       to: subscriber.email,
-      subject: EMAIL_NEW_POST_SUBJECT,
+      subject: emailMessages.NEW_POST_SUBJECT,
       template: './new-post',
       context: {
         user: `${subscriber.firstname} ${subscriber.lastname}`,

@@ -1,2 +1,5 @@
-export const POST_COMMENT_NOT_FOUND = 'Post comment not found'; 
-export const POST_COMMENT_MESSAGE_EMPTY = 'The message is empty';
+
+export const postCommentErrors = {
+    NOT_FOUND: 'Post comment not found',
+    MESSAGE_EMPTY: 'The message is empty',
+}
